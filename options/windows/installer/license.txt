@@ -1,42 +1,41 @@
+Gloomytale 最终用户许可协议
+
+一、项目性质
+
+Gloomytale 是基于 UNDERTALE 创作的非商业同人游戏，与 Toby Fox 及 UNDERTALE 官方不存在隶属、授权或认可关系。UNDERTALE 及相关原作内容的权利归其各自权利人所有；本项目原创内容的权利归各自创作者所有。
+
+二、许可范围
+
+用户获得一项个人、非独占、不可转让且可撤销的许可，可以安装和使用本游戏。
+
+不得出售、出租、付费授权本游戏本体或其副本，也不得以本游戏本体作为收费商品直接获利。
+
+三、使用限制
+
+除适用法律明确允许外，未经项目维护者书面许可，不得修改、反编译、反汇编、逆向工程本游戏或其任何部分，也不得移除、修改或遮盖其中的著作权、商标及其他权利声明。
+
+不得利用本游戏从事违法活动。
+
+四、协议终止
+
+用户违反本协议时，项目维护者可以终止本许可。许可终止后，用户应停止使用本游戏并删除持有的副本。
+
+五、免责声明
+
+本游戏按“现状”提供。在适用法律允许的最大范围内，项目维护者不保证本游戏不会中断、没有错误或适用于特定目的，也不对因安装、使用或无法使用本游戏而产生的间接损失承担责任。本条款不影响用户依法享有且不能被排除的权利。
+
+六、接受协议
+
+安装或运行本游戏即表示用户已阅读、理解并同意本协议。不同意本协议的用户不得安装或运行本游戏。
+
+GameMaker / YoYo Games Notice (Original Text)
+
 This Application was made using GameMaker. GameMaker is the intellectual property of YoYo Games Ltd, a company of the United Kingdom.
-
-THIS END USER LICENSE AGREEMENT APPLIES TO ALL USE OF THIS APPLICATION.
-
-Scope
------
-You may:
-
-Install and use this Application for personal, or commercial use [provided you have paid any license fee, if this applies];
-
-You must not:
-
-use, copy, transfer, distribute modify, adapt, merge, translate, decompile, disassemble, or reverse engineer the Application or part of it except as expressly permitted by this Licence;
-remove, modify, or tamper with any copyright, trademark or other notice;
-use the Application for any illegal, unlawful or immoral purposes.
-
-
-Term
-----
-This License will end automatically if you breach any of the terms.
-When this License ends you must stop all use of the Application and destroy and erase any copies you have.
-
-
-Liability
----------
 
 YoYo Games Limited ("YoYo Games") is not involved in the creation of this Application except only that it was made using GameMaker. YoYo Games warrants only that GameMaker will function satisfactorily if used properly and on the correct operating system.
 YoYo Games does not warrant that the operation of the Application will be uninterrupted or error free or that errors can be corrected. You install and use the Application at your own risk and in no event will YoYo Games be liable to you for any loss or damage of any kind (except personal injury or death arising from YoYo Games' negligence) including lost profits or other consequential loss arising from the use of or inability to use the Application or from errors or deficiencies in it whether caused by negligence or otherwise.
 To the maximum extent permitted by law, YoYo Games Limited excludes liability for all warranties, conditions and other terms which but for this notice would have effect.
 
-
-General
--------
-
 All copyright and other intellectual property rights in GameMaker and parts of it included in the Application belong to and vest in YoYo Games. All rights of YoYo Games are hereby asserted and reserved.
 All trade marks are the property of their respective owners and YoYo Games makes no warranty or representation in respect of and has no responsibility and excludes all liability for any trade mark or third party content.
-The rights granted in this license are non-exclusive.
-This license does not affect your statutory rights as a consumer.
-This License is governed by English Law and the parties submit to the exclusive jurisdiction of the English Courts.
 If you have a problem with this Application please contact the person who made it, not YoYo Games.
-
-Click "ACCEPT" and accept these terms to install and use this Application. If you do not accept them terms you may not continue with the installation and you must not install, use or run this software on this or any other computer.
