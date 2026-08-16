@@ -1,9 +1,18 @@
 ui_state = 0;
-ui_progress = 0;
-ui_selected = 0;
 ui_page = 0;
-ui_entries = ["ITEM", "STAT", "CONFIG"];
-ui_entry_count = array_length(ui_entries);
-ui_animation_speed = 0.2;
+ui_main_selected = 0;
+ui_item_selected = 0;
+ui_item_focus = 0;
+ui_action_selected = 0;
+ui_cell_selected = 0;
+
+ui_main_entries = ["ITEM", "STAT", "CELL"];
+ui_item_entries = ["PLACEHOLDER"];
+ui_item_actions = ["USE", "INFO", "DROP"];
+ui_cell_entries = ["PLACEHOLDER"];
+
+ui_font = asset_get_index("Fnt_Ark_Pixel_12_ZH_CN");
+ui_small_font = asset_get_index("Fnt_Crypt_Of_Tomorrow_6");
+ui_character_below = false;
 
 global.Gloomy_Overworld_UI_Open = false;

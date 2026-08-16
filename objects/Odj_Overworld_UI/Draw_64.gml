@@ -8,54 +8,109 @@ var previous_font = draw_get_font();
 var previous_halign = draw_get_halign();
 var previous_valign = draw_get_valign();
 
-var gui_width = display_get_gui_width();
-var gui_height = display_get_gui_height();
-var eased_progress = ui_progress * ui_progress * (3 - 2 * ui_progress);
-var margin = 24;
-var panel_width = min(220, gui_width - margin * 2);
-var panel_height = min(300, gui_height - margin * 2);
-var panel_x = lerp(-panel_width - margin, margin, eased_progress);
-var panel_y = (gui_height - panel_height) * 0.5;
+var draw_panel = function(_x, _y, _width, _height) {
+    draw_set_color(c_white);
+    draw_rectangle(_x, _y, _x + _width, _y + _height, false);
+    draw_set_color(c_black);
+    draw_rectangle(_x + 6, _y + 6, _x + _width - 6, _y + _height - 6, false);
+};
 
-draw_set_alpha(0.55 * eased_progress);
-draw_set_color(c_black);
-draw_rectangle(0, 0, gui_width, gui_height, false);
+var draw_ui_text = function(_x, _y, _text) {
+    draw_text(_x, _y, _text);
+};
 
-draw_set_alpha(eased_progress);
-draw_set_color(c_black);
-draw_rectangle(panel_x, panel_y, panel_x + panel_width, panel_y + panel_height, false);
-draw_set_color(c_white);
-draw_rectangle(panel_x, panel_y, panel_x + panel_width, panel_y + panel_height, true);
-
-draw_set_font(-1);
-draw_set_halign(fa_left);
-draw_set_valign(fa_middle);
-
-for (var i = 0; i < ui_entry_count; i++) {
-    var entry_y = panel_y + 70 + i * 52;
-    draw_set_color((i == ui_selected && ui_page == 0) ? c_yellow : c_white);
-    draw_text(panel_x + 48, entry_y, ui_entries[i]);
-
-    if (i == ui_selected && ui_page == 0) {
-        draw_text(panel_x + 24, entry_y, ">");
+var draw_small_text = function(_x, _y, _text) {
+    if (ui_small_font >= 0) {
+        draw_set_font(ui_small_font);
+        draw_text_transformed(_x, _y, _text, 2, 2, 0);
     }
+    else {
+        draw_set_font(ui_font >= 0 ? ui_font : -1);
+        draw_text(_x, _y, _text);
+    }
+};
+
+var draw_cursor = function(_x, _y) {
+    draw_sprite(Spr_SoulGUI_Red, 0, _x + 9, _y + 9);
+};
+
+if (ui_font < 0) {
+    ui_font = asset_get_index("Fnt_Ark_Pixel_12_ZH_CN");
+}
+if (ui_small_font < 0) {
+    ui_small_font = asset_get_index("Fnt_Crypt_Of_Tomorrow_6");
 }
 
-if (ui_page > 0) {
-    var content_margin = 24;
-    var content_x1 = panel_x + panel_width + content_margin;
-    var content_x2 = gui_width - margin;
+draw_set_alpha(1);
+draw_set_font(ui_font >= 0 ? ui_font : -1);
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);
 
-    if (content_x2 - content_x1 >= 160) {
-        draw_set_color(c_black);
-        draw_rectangle(content_x1, panel_y, content_x2, panel_y + panel_height, false);
+var info_y = ui_character_below ? 322 : 52;
+draw_panel(32, info_y, 140, 108);
+draw_panel(32, 168, 140, 146);
+
+draw_set_color(c_white);
+draw_ui_text(48, info_y + 16, "GLOOMY");
+draw_small_text(48, info_y + 48, "LV  1");
+draw_small_text(48, info_y + 72, "HP  20 / 20");
+
+draw_set_font(ui_font >= 0 ? ui_font : -1);
+
+for (var i = 0; i < array_length(ui_main_entries); i++) {
+    draw_ui_text(84, 188 + i * 36, ui_main_entries[i]);
+}
+
+if (ui_page == 0) {
+    draw_cursor(56, 196 + ui_main_selected * 36);
+}
+
+switch (ui_page) {
+    case 1:
+        draw_panel(188, 52, 344, 360);
+
         draw_set_color(c_white);
-        draw_rectangle(content_x1, panel_y, content_x2, panel_y + panel_height, true);
-        draw_set_valign(fa_top);
-        draw_text(content_x1 + 24, panel_y + 24, ui_entries[ui_page - 1]);
-        draw_set_color(c_gray);
-        draw_text(content_x1 + 24, panel_y + 70, "PLACEHOLDER");
-    }
+        for (var item_index = 0; item_index < array_length(ui_item_entries); item_index++) {
+            draw_ui_text(232, 80 + item_index * 32, ui_item_entries[item_index]);
+        }
+
+        for (var action_index = 0; action_index < array_length(ui_item_actions); action_index++) {
+            var action_x = [232, 328, 442][action_index];
+            draw_ui_text(action_x, 360, ui_item_actions[action_index]);
+        }
+
+        if (ui_item_focus == 0) {
+            draw_cursor(208, 88 + ui_item_selected * 32);
+        }
+        else {
+            var action_cursor_x = [208, 304, 418][ui_action_selected];
+            draw_cursor(action_cursor_x, 368);
+        }
+        break;
+
+    case 2:
+        draw_panel(188, 52, 344, 416);
+
+        draw_set_color(c_white);
+        draw_ui_text(232, 80, "GLOOMY");
+        draw_small_text(232, 120, "LV 1");
+        draw_small_text(232, 152, "HP 20 / 20");
+        draw_small_text(232, 200, "AT 0 (0)");
+        draw_small_text(232, 232, "DF 0 (0)");
+        draw_small_text(232, 280, "EXP: 0");
+        draw_small_text(232, 312, "NEXT: 10");
+        draw_small_text(232, 360, "GOLD: 0");
+        break;
+
+    case 3:
+        draw_panel(188, 52, 344, 268);
+
+        draw_set_color(c_white);
+        for (var cell_index = 0; cell_index < array_length(ui_cell_entries); cell_index++) {
+            draw_ui_text(232, 80 + cell_index * 32, ui_cell_entries[cell_index]);
+        }
+        draw_cursor(208, 88 + ui_cell_selected * 32);
+        break;
 }
 
 draw_set_alpha(previous_alpha);
