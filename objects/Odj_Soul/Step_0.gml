@@ -25,15 +25,15 @@ if (Hp_Normal <= 0) {
     Hp_Karma = 0;
 }
 if (Hp_Karma > 0) {
-	Hp_Karma = Hp_Karma ;
+    Hp_Karma = Hp_Karma - 1;
 }
 else if (Hp_Karma < 0) {
-	Hp_Normal += Hp_Karma - 1;
+    Hp_Normal += Hp_Karma;
     Hp_Karma = 0;
 }
 Hp_Final = Hp_Normal + Hp_Karma;
 //红魂
-if (sprite_index == Spr_Soul_Red) {
+if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
 	Move_Up = keyboard_check(ord("W")) || keyboard_check(vk_up); 
     Move_Down = keyboard_check(ord("S")) || keyboard_check(vk_down);
     Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
@@ -42,7 +42,7 @@ if (sprite_index == Spr_Soul_Red) {
     V = Move_Down - Move_Up;
 }
 //橙魂
-if (sprite_index == Spr_Soul_Orange) {
+if (sprite_index == Spr_Soul_Orange && Hp_Final > 0) {
 	if (keyboard_check_pressed(ord("W")) || keyboard_check_pressed(vk_up)) {
     	Move_Up = true;
         Move_Down = false;
@@ -71,9 +71,10 @@ if (sprite_index == Spr_Soul_Orange) {
     V = Move_Down - Move_Up;
 }
 //黄魂
-if (sprite_index == Spr_Soul_Yellow) {
+if (sprite_index == Spr_Soul_Yellow && Hp_Final > 0) {
     if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
-    	instance_create_depth(x, y - 20, depth, Odj_Bullet_Soul_Yellow);
+        audio_play_sound(Snd_Soul_Yellow_Shoot_Bullet, 0, false);
+        instance_create_depth(x, y - 17, depth, Odj_Bullet_Soul_Yellow);
     }
 	Move_Up = keyboard_check(ord("W")) || keyboard_check(vk_up); 
     Move_Down = keyboard_check(ord("S")) || keyboard_check(vk_down);
@@ -87,21 +88,21 @@ if (H != 0 && V != 0) {
     H *= 0.707;
     V *= 0.707;
 }
-//移速计算逻辑
+//移速与移动计算逻辑
 if (keyboard_check(ord("X")) || keyboard_check(vk_shift)) { 
     Move_Speed_Final = Move_Speed * Move_Speed_modifier_Penalty * Move_Speed_modifier_Hold_X_Or_Shift;
 }
 else {
 	Move_Speed_Final = Move_Speed * Move_Speed_modifier_Penalty;
 }
-move_and_collide(x, y, H * Move_Speed_Final, V * Move_Speed_Final, Broder_Battle);
 if (Move_Speed_modifier_Penalty_timer > 0) {
 	Move_Speed_modifier_Penalty_timer -= 1;
 }
 else {
     Move_Speed_modifier_Penalty_timer = 0;
-	Move_Speed_modifier_Penalty = 1;
+    Move_Speed_modifier_Penalty = 1;
 }
+move_and_collide(H * Move_Speed_Final, V * Move_Speed_Final, Broder_Battle);
 //减少无敌帧与闪烁
 if (Invincible_Frames > 0) {
 	Invincible_Frames -= 1;
