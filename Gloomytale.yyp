@@ -37,11 +37,13 @@
   "resources":[
     {"id":{"name":"Broder_Battle","path":"objects/Broder_Battle/Broder_Battle.yy",},},
     {"id":{"name":"Odj_Bullet_Soul_Yellow","path":"objects/Odj_Bullet_Soul_Yellow/Odj_Bullet_Soul_Yellow.yy",},},
+    {"id":{"name":"Odj_Debug_Room_Nav","path":"objects/Odj_Debug_Room_Nav/Odj_Debug_Room_Nav.yy",},},
     {"id":{"name":"Odj_Overworld_UI","path":"objects/Odj_Overworld_UI/Odj_Overworld_UI.yy",},},
     {"id":{"name":"Odj_Soul","path":"objects/Odj_Soul/Odj_Soul.yy",},},
     {"id":{"name":"Odj_Test_Bullet_FrameDamage","path":"objects/Odj_Test_Bullet_FrameDamage/Odj_Test_Bullet_FrameDamage.yy",},},
     {"id":{"name":"Odj_Test_Bullet","path":"objects/Odj_Test_Bullet/Odj_Test_Bullet.yy",},},
     {"id":{"name":"Parent_Bullet","path":"objects/Parent_Bullet/Parent_Bullet.yy",},},
+    {"id":{"name":"Battle_Room","path":"rooms/Battle_Room/Battle_Room.yy",},},
     {"id":{"name":"OverWorld","path":"rooms/OverWorld/OverWorld.yy",},},
     {"id":{"name":"Title_Room","path":"rooms/Title_Room/Title_Room.yy",},},
     {"id":{"name":"Snd_Hurt","path":"sounds/Snd_Hurt/Snd_Hurt.yy",},},
@@ -68,6 +70,7 @@
   "RoomOrderNodes":[
     {"roomId":{"name":"Title_Room","path":"rooms/Title_Room/Title_Room.yy",},},
     {"roomId":{"name":"OverWorld","path":"rooms/OverWorld/OverWorld.yy",},},
+    {"roomId":{"name":"Battle_Room","path":"rooms/Battle_Room/Battle_Room.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
