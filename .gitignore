@@ -61,5 +61,6 @@ Temporary Items
 # GMRT build directory
 Build
 
-# Local contributor guide
+# Local project files
 /AGENTS.md
+/plans/
