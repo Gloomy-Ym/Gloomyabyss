@@ -40,6 +40,10 @@ if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
     Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
     H = Move_Right - Move_Left;
     V = Move_Down - Move_Up;
+    if (H != 0 && V != 0) { 
+        H *= 0.707;
+        V *= 0.707;
+    }
 }
 //橙魂
 if (sprite_index == Spr_Soul_Orange && Hp_Final > 0) {
@@ -69,6 +73,10 @@ if (sprite_index == Spr_Soul_Orange && Hp_Final > 0) {
     }
     H = Move_Right - Move_Left;
     V = Move_Down - Move_Up;
+    if (H != 0 && V != 0) { 
+        H *= 0.707;
+        V *= 0.707; 
+    }
 }
 //黄魂
 if (sprite_index == Spr_Soul_Yellow && Hp_Final > 0) {
@@ -82,11 +90,28 @@ if (sprite_index == Spr_Soul_Yellow && Hp_Final > 0) {
     Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
     H = Move_Right - Move_Left;
     V = Move_Down - Move_Up;
+    if (H != 0 && V != 0) { 
+        H *= 0.707;
+        V *= 0.707; 
+    }
 }
-//斜向移速修正
-if (H != 0 && V != 0) { 
-    H *= 0.707;
-    V *= 0.707;
+//绿魂
+if (sprite_index == Spr_Soul_Green && Hp_Final > 0) {
+    if (instance_exists(Obj_Shield_Soul_Green) == false) {
+    	instance_create_depth(x, y, depth, Obj_Shield_Soul_Green);
+    }
+    if (keyboard_check_pressed(ord("W")) || keyboard_check_pressed(vk_up)) {
+    	Obj_Shield_Soul_Green.image_angle = 0;
+    }
+    else if (keyboard_check_pressed(ord("S")) || keyboard_check_pressed(vk_down)) {
+    	Obj_Shield_Soul_Green.image_angle = 180;
+    }
+    else if (keyboard_check_pressed(ord("A")) || keyboard_check_pressed(vk_left)) {
+    	Obj_Shield_Soul_Green.image_angle = 90;
+    }
+    else if (keyboard_check_pressed(ord("D")) || keyboard_check_pressed(vk_right)) {
+    	Obj_Shield_Soul_Green.image_angle = 270;
+    }
 }
 //移速与移动计算逻辑
 if (keyboard_check(ord("X")) || keyboard_check(vk_shift)) { 

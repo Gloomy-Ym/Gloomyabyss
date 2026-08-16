@@ -7,3 +7,5 @@ Invincible_Frames = 45;
 Delete_Collision = true;
 Hit = true;
 Hp_Bullet = 1;
+H_speed = 0;
+V_speed = 0;

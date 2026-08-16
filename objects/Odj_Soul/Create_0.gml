@@ -18,6 +18,8 @@ Move_Speed = 4;
 Move_Speed_modifier_Hold_X_Or_Shift = 0.5;
 Move_Speed_modifier_Penalty = 1;
 Move_Speed_modifier_Penalty_timer = 0;
+H = 0;
+V = 0;
 //无敌帧
 Invincible_Frames = 0;
 Invincible_Frames_Falsh_Timer = 0;

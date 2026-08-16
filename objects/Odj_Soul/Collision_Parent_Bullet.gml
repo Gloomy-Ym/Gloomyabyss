@@ -1,6 +1,6 @@
 //碰到弹幕
 if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0) {
-    audio_play_sound(Snd_Hurt,0,false);
+    audio_play_sound(Snd_Hurt, 0, false);
     Invincible_Frames = other.Invincible_Frames;
     Move_Speed_modifier_Penalty = other.Move_Speed_modifier_Penalty;
     Move_Speed_modifier_Penalty_timer = other.Move_Speed_modifier_Penalty_timer;
