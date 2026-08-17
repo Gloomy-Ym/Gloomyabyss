@@ -1,7 +1,7 @@
 {
   "$GMRoom":"v1",
   "%Name":"OverWorld",
-  "creationCodeFile":"",
+  "creationCodeFile":"rooms/OverWorld/RoomCreationCode.gml",
   "inheritCode":false,
   "inheritCreationOrder":false,
   "inheritLayers":false,
@@ -33,10 +33,10 @@
   "resourceType":"GMRoom",
   "resourceVersion":"2.0",
   "roomSettings":{
-    "Height":480,
+    "Height":240,
     "inheritRoomSettings":false,
     "persistent":false,
-    "Width":640,
+    "Width":320,
   },
   "sequenceId":null,
   "views":[

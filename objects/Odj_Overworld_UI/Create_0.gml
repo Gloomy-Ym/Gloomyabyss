@@ -11,7 +11,7 @@ ui_item_entries = ["PLACEHOLDER"];
 ui_item_actions = ["USE", "INFO", "DROP"];
 ui_cell_entries = ["PLACEHOLDER"];
 
-ui_font = asset_get_index("Fnt_Ark_Pixel_12_ZH_CN");
+ui_font = asset_get_index("Fnt_8bitoperator_JVE_12");
 ui_small_font = asset_get_index("Fnt_Crypt_Of_Tomorrow_6");
 ui_character_below = false;
 
