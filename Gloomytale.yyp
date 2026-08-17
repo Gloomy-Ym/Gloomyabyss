@@ -42,6 +42,7 @@
   },
   "name":"Gloomytale",
   "resources":[
+    {"id":{"name":"Fnt_8bitoperator_JVE_12","path":"fonts/Fnt_8bitoperator_JVE_12/Fnt_8bitoperator_JVE_12.yy",},},
     {"id":{"name":"Fnt_Ark_Pixel_12_ZH_CN","path":"fonts/Fnt_Ark_Pixel_12_ZH_CN/Fnt_Ark_Pixel_12_ZH_CN.yy",},},
     {"id":{"name":"Fnt_Crypt_Of_Tomorrow_6","path":"fonts/Fnt_Crypt_Of_Tomorrow_6/Fnt_Crypt_Of_Tomorrow_6.yy",},},
     {"id":{"name":"Broder_Battle","path":"objects/Broder_Battle/Broder_Battle.yy",},},
@@ -58,6 +59,8 @@
     {"id":{"name":"Title_Room","path":"rooms/Title_Room/Title_Room.yy",},},
     {"id":{"name":"Snd_Block_Bullet","path":"sounds/Snd_Block_Bullet/Snd_Block_Bullet.yy",},},
     {"id":{"name":"Snd_Hurt","path":"sounds/Snd_Hurt/Snd_Hurt.yy",},},
+    {"id":{"name":"Snd_Menu_Select","path":"sounds/Snd_Menu_Select/Snd_Menu_Select.yy",},},
+    {"id":{"name":"Snd_Menu_Selection","path":"sounds/Snd_Menu_Selection/Snd_Menu_Selection.yy",},},
     {"id":{"name":"Snd_Soul_Yellow_Shoot_Bullet","path":"sounds/Snd_Soul_Yellow_Shoot_Bullet/Snd_Soul_Yellow_Shoot_Bullet.yy",},},
     {"id":{"name":"Spr_Bullet_Soul_Yellow_1","path":"sprites/Spr_Bullet_Soul_Yellow_1/Spr_Bullet_Soul_Yellow_1.yy",},},
     {"id":{"name":"Spr_Bullet_Soul_Yellow_2","path":"sprites/Spr_Bullet_Soul_Yellow_2/Spr_Bullet_Soul_Yellow_2.yy",},},

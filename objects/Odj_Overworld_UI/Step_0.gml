@@ -32,15 +32,24 @@ else if (ui_page == 0) {
     var main_count = array_length(ui_main_entries);
 
     if (up_pressed) {
+        var previous_main_selected = ui_main_selected;
         ui_main_selected = (ui_main_selected + main_count - 1) mod main_count;
+        if (ui_main_selected != previous_main_selected) {
+            audio_play_sound(Snd_Menu_Select, 0, false);
+        }
     }
     else if (down_pressed) {
+        var previous_main_selected = ui_main_selected;
         ui_main_selected = (ui_main_selected + 1) mod main_count;
+        if (ui_main_selected != previous_main_selected) {
+            audio_play_sound(Snd_Menu_Select, 0, false);
+        }
     }
 
     if (confirm_pressed) {
         ui_page = ui_main_selected + 1;
         ui_item_focus = 0;
+        audio_play_sound(Snd_Menu_Selection, 0, false);
     }
 }
 else if (ui_page == 1) {
@@ -48,24 +57,41 @@ else if (ui_page == 1) {
         var item_count = array_length(ui_item_entries);
 
         if (up_pressed) {
+            var previous_item_selected = ui_item_selected;
             ui_item_selected = (ui_item_selected + item_count - 1) mod item_count;
+            if (ui_item_selected != previous_item_selected) {
+                audio_play_sound(Snd_Menu_Select, 0, false);
+            }
         }
         else if (down_pressed) {
+            var previous_item_selected = ui_item_selected;
             ui_item_selected = (ui_item_selected + 1) mod item_count;
+            if (ui_item_selected != previous_item_selected) {
+                audio_play_sound(Snd_Menu_Select, 0, false);
+            }
         }
 
         if (confirm_pressed && item_count > 0) {
             ui_item_focus = 1;
+            audio_play_sound(Snd_Menu_Selection, 0, false);
         }
     }
     else {
         var action_count = array_length(ui_item_actions);
 
         if (left_pressed) {
+            var previous_action_selected = ui_action_selected;
             ui_action_selected = (ui_action_selected + action_count - 1) mod action_count;
+            if (ui_action_selected != previous_action_selected) {
+                audio_play_sound(Snd_Menu_Select, 0, false);
+            }
         }
         else if (right_pressed) {
+            var previous_action_selected = ui_action_selected;
             ui_action_selected = (ui_action_selected + 1) mod action_count;
+            if (ui_action_selected != previous_action_selected) {
+                audio_play_sound(Snd_Menu_Select, 0, false);
+            }
         }
     }
 }
@@ -73,10 +99,18 @@ else if (ui_page == 3) {
     var cell_count = array_length(ui_cell_entries);
 
     if (up_pressed) {
+        var previous_cell_selected = ui_cell_selected;
         ui_cell_selected = (ui_cell_selected + cell_count - 1) mod cell_count;
+        if (ui_cell_selected != previous_cell_selected) {
+            audio_play_sound(Snd_Menu_Select, 0, false);
+        }
     }
     else if (down_pressed) {
+        var previous_cell_selected = ui_cell_selected;
         ui_cell_selected = (ui_cell_selected + 1) mod cell_count;
+        if (ui_cell_selected != previous_cell_selected) {
+            audio_play_sound(Snd_Menu_Select, 0, false);
+        }
     }
 }
 
