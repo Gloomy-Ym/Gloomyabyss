@@ -1,21 +1,19 @@
 {
   "$GMObject":"",
-  "%Name":"Odj_Test_Bullet_FrameDamage",
+  "%Name":"Obj_Soul",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":{"name":"Parent_Bullet","path":"objects/Parent_Bullet/Parent_Bullet.yy",},"eventNum":0,"eventType":4,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"Odj_Test_Bullet_FrameDamage",
+  "name":"Obj_Soul",
   "overriddenProperties":[],
   "parent":{
-    "name":"Bullet",
-    "path":"folders/Objects/Bullet.yy",
+    "name":"Soul",
+    "path":"folders/Objects/Soul.yy",
   },
-  "parentObjectId":{
-    "name":"Parent_Bullet",
-    "path":"objects/Parent_Bullet/Parent_Bullet.yy",
-  },
+  "parentObjectId":null,
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -34,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"Spr_Test_Bullet_FrameDamage",
-    "path":"sprites/Spr_Test_Bullet_FrameDamage/Spr_Test_Bullet_FrameDamage.yy",
+    "name":"Spr_Soul_Blue",
+    "path":"sprites/Spr_Soul_Blue/Spr_Soul_Blue.yy",
   },
   "spriteMaskId":null,
   "visible":true,

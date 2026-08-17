@@ -58,7 +58,7 @@ if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
     if (Move_Jump == true) {
         //站在地上时按了 W/↑，就开始起跳
         if (keyboard_check(ord("W")) || keyboard_check(vk_up)) {
-            Move_Up = 2;          //往上飞的速度：2
+            Move_Up = 1.5;          //往上飞的速度：2
             Move_Jump = false;    //已经离开地面，不再算“站在地上”
             Move_Jump_Timer = 0;  //重置按住跳跃的计时器
         }
@@ -71,7 +71,7 @@ if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
         //已经离开地面了：只要还按着 W/↑ 且计时器没到 15，就一直保持上升
         //这样“长按跳更高，短按跳得矮”
         if ((keyboard_check(ord("W")) || keyboard_check(vk_up)) && Move_Jump_Timer < 15) {
-            Move_Up = 2;          //保持上升速度
+            Move_Up = 1.5;          //保持上升速度
             Move_Jump_Timer += 1; //每帧多算一次，用来限制最长上升时间
         }
         else {
@@ -136,7 +136,7 @@ if (sprite_index == Spr_Soul_Orange && Hp_Final > 0) {
 if (sprite_index == Spr_Soul_Yellow && Hp_Final > 0) {
     if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
         audio_play_sound(Snd_Soul_Yellow_Shoot_Bullet, 0, false);
-        instance_create_depth(x, y - 17, depth, Odj_Bullet_Soul_Yellow);
+        instance_create_depth(x, y - 17, depth, Obj_Bullet_Soul_Yellow);
     }
     Move_Up = keyboard_check(ord("W")) || keyboard_check(vk_up);
     Move_Down = keyboard_check(ord("S")) || keyboard_check(vk_down);
