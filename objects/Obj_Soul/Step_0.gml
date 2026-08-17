@@ -84,8 +84,8 @@ if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
     //垂直方向 = 往下掉的速度 减去 往上飞的速度（往上飞时是负数，就代表向上）
     V = Move_Down - Move_Up;
 }
-move_and_collide(H * Move_Speed_Final, 0, Broder_Battle);
-Collisions = move_and_collide(0, V * Move_Speed_Final, Broder_Battle);
+move_and_collide(H * Move_Speed_Final, 0, Obj_Broder_Battle);
+Collisions = move_and_collide(0, V * Move_Speed_Final, Obj_Broder_Battle);
 //红魂
 if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
     Move_Up = keyboard_check(ord("W")) || keyboard_check(vk_up);

@@ -1,9 +1,9 @@
 {
   "$GMObject":"",
-  "%Name":"Broder_Battle",
+  "%Name":"Obj_Broder_Battle",
   "eventList":[],
   "managed":true,
-  "name":"Broder_Battle",
+  "name":"Obj_Broder_Battle",
   "overriddenProperties":[],
   "parent":{
     "name":"Border",
