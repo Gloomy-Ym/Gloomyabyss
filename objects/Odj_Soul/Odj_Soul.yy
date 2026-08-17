@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"Spr_Soul_Green",
-    "path":"sprites/Spr_Soul_Green/Spr_Soul_Green.yy",
+    "name":"Spr_Soul_Blue",
+    "path":"sprites/Spr_Soul_Blue/Spr_Soul_Blue.yy",
   },
   "spriteMaskId":null,
   "visible":true,

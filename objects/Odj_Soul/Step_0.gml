@@ -32,6 +32,22 @@ else if (Hp_Karma < 0) {
     Hp_Karma = 0;
 }
 Hp_Final = Hp_Normal + Hp_Karma;
+//移速与移动计算逻辑
+if (keyboard_check(ord("X")) || keyboard_check(vk_shift)) { 
+    Move_Speed_Final = Move_Speed * Move_Speed_Modifier_Penalty * Move_Speed_Modifier_Hold_X_Or_Shift;
+}
+else {
+	Move_Speed_Final = Move_Speed * Move_Speed_Modifier_Penalty;
+}
+if (Move_Speed_Modifier_Penalty_Timer > 0) {
+	Move_Speed_Modifier_Penalty_Timer -= 1;
+}
+else {
+    Move_Speed_Modifier_Penalty_Timer = 0;
+    Move_Speed_Modifier_Penalty = 1;
+}
+move_and_collide(H * Move_Speed_Final, 0, Broder_Battle);
+Collisions = move_and_collide(0, V * Move_Speed_Final, Broder_Battle);
 //红魂
 if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
 	Move_Up = keyboard_check(ord("W")) || keyboard_check(vk_up); 
@@ -113,21 +129,54 @@ if (sprite_index == Spr_Soul_Green && Hp_Final > 0) {
     	Obj_Shield_Soul_Green.image_angle = 270;
     }
 }
-//移速与移动计算逻辑
-if (keyboard_check(ord("X")) || keyboard_check(vk_shift)) { 
-    Move_Speed_Final = Move_Speed * Move_Speed_modifier_Penalty * Move_Speed_modifier_Hold_X_Or_Shift;
+//青魂
+if (sprite_index == Spr_Soul_Cyan && Hp_Final > 0) {
+	Move_Up = false; 
+    Move_Down = false;
+    Move_Left = false;
+    Move_Right = false;
+    H = Move_Right - Move_Left;
+    V = Move_Down - Move_Up;
+    if (H != 0 && V != 0) { 
+        H *= 0.707;
+        V *= 0.707; 
+    }
 }
-else {
-	Move_Speed_Final = Move_Speed * Move_Speed_modifier_Penalty;
+//蓝魂
+if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
+	Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
+    Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
+    H = Move_Right - Move_Left;
+    if (array_length(Collisions) <= 0 && Move_Jump == false) {
+    	Move_Down += 0.05;
+        Move_Down = min(Move_Down, 1);
+    }
+    else if (array_length(Collisions) > 0 && Move_Jump == true) {
+    	Move_Down = 0;
+        Move_Jump_Timer = 15;
+    } 
+    if (array_length(Collisions) > 0) {
+    	Move_Jump = true;
+    }
+    V = Move_Down - Move_Up;
+    if (Move_Jump == true && (keyboard_check(ord("W")) || keyboard_check(vk_up))) {
+    	Move_Up = 2;
+    }
+    if (Move_Up > 0) {
+    	Move_Jump_Timer += 1;
+    }
+    if ((!keyboard_check(ord("W")) && !keyboard_check(vk_up)) || Move_Jump_Timer >= 15) {
+        if (array_length(Collisions) = 0) {
+        	Move_Up = 0;
+    	    Move_Jump = false;
+            Move_Jump_Timer = 0;
+        }
+    }
+    if (Move_Up = 0) {
+    	Move_Jump_Timer = 0
+    }
+    V = Move_Down - Move_Up;
 }
-if (Move_Speed_modifier_Penalty_timer > 0) {
-	Move_Speed_modifier_Penalty_timer -= 1;
-}
-else {
-    Move_Speed_modifier_Penalty_timer = 0;
-    Move_Speed_modifier_Penalty = 1;
-}
-move_and_collide(H * Move_Speed_Final, V * Move_Speed_Final, Broder_Battle);
 //减少无敌帧与闪烁
 if (Invincible_Frames > 0) {
 	Invincible_Frames -= 1;
@@ -168,5 +217,5 @@ if (keyboard_check(ord("1"))) {
 }
 if (Move_Speed_Final < 4) {
 	show_debug_message(Move_Speed_Final);
-    show_debug_message(Move_Speed_modifier_Penalty_timer);
+    show_debug_message(Move_Speed_Modifier_Penalty_Timer);
 }

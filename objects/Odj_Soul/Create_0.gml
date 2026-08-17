@@ -15,9 +15,16 @@ Def_Self = 0;
 Def_Equip = 0;
 //移速
 Move_Speed = 4;
-Move_Speed_modifier_Hold_X_Or_Shift = 0.5;
-Move_Speed_modifier_Penalty = 1;
-Move_Speed_modifier_Penalty_timer = 0;
+Move_Speed_Modifier_Hold_X_Or_Shift = 0.5;
+Move_Speed_Modifier_Penalty = 1;
+Move_Speed_Modifier_Penalty_Timer = 0;
+//移动方向
+Move_Up = false
+Move_Down = false;
+Move_Left = false;
+Move_Right = false;
+Move_Jump = false;
+Move_Jump_Timer = 0;
 H = 0;
 V = 0;
 //无敌帧
