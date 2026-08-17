@@ -5,7 +5,7 @@
   "option_windows_allow_fullscreen_switching":true,
   "option_windows_borderless":false,
   "option_windows_company_info":"Gloomytale Production Team",
-  "option_windows_copyright_info":"UNDERTALE © Toby Fox 2015 | Gloomytale By Gloomy",
+  "option_windows_copyright_info":"UNDERTALE © Toby Fox 2015 | Gloomytale By Gloomytale Production Team",
   "option_windows_copy_exe_to_dest":false,
   "option_windows_d3dswapeffectdiscard":false,
   "option_windows_description_info":"Gloomytale By Gloomytale Production Team",

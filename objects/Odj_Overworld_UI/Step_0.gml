@@ -8,6 +8,7 @@ var right_pressed = keyboard_check_pressed(ord("D")) || keyboard_check_pressed(v
 
 if (ui_state == 0) {
     if (toggle_pressed) {
+        audio_play_sound(Snd_Menu_Select, 0, false);
         ui_state = 1;
         ui_page = 0;
     }
