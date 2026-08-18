@@ -39,7 +39,7 @@ else if (Hp_Karma < 0) {
 }
 Hp_Final = Hp_Normal + Hp_Karma;
 //移速与移动计算逻辑
-if (keyboard_check(ord("X")) || keyboard_check(vk_shift)) {
+if (Scr_Input_KeyDown(ord("X")) || Scr_Input_KeyDown(vk_shift)) {
     Move_Speed_Final = Move_Speed * Move_Speed_Modifier_Penalty * Move_Speed_Modifier_Hold_X_Or_Shift;
 }
 else {
@@ -56,14 +56,14 @@ else {
 //这里必须放在 move_and_collide 之前，这样算出来的速度才能当帧就用上，不会慢半拍
 if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
     //左右：按住 A/← 往左，按住 D/→ 往右。两个方向用数字相减，结果只能是 -1、0 或 1
-    Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
-    Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
+    Move_Left = Scr_Input_KeyDown(ord("A")) || Scr_Input_KeyDown(vk_left);
+    Move_Right = Scr_Input_KeyDown(ord("D")) || Scr_Input_KeyDown(vk_right);
     H = Move_Right - Move_Left;
 
     //Move_Jump 是“站在地上”的标志。true 表示脚踩在地上、还没跳起来
     if (Move_Jump == true) {
         //站在地上时按了 W/↑，就开始起跳
-        if (keyboard_check(ord("W")) || keyboard_check(vk_up)) {
+        if (Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up)) {
             Move_Up = 1.5;          //往上飞的速度：2
             Move_Jump = false;    //已经离开地面，不再算“站在地上”
             Move_Jump_Timer = 0;  //重置按住跳跃的计时器
@@ -76,7 +76,7 @@ if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
     else {
         //已经离开地面了：只要还按着 W/↑ 且计时器没到 15，就一直保持上升
         //这样“长按跳更高，短按跳得矮”
-        if ((keyboard_check(ord("W")) || keyboard_check(vk_up)) && Move_Jump_Timer < 15) {
+        if ((Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up)) && Move_Jump_Timer < 15) {
             Move_Up = 1.5;          //保持上升速度
             Move_Jump_Timer += 1; //每帧多算一次，用来限制最长上升时间
         }
@@ -94,10 +94,10 @@ move_and_collide(H * Move_Speed_Final, 0, Obj_Broder_Battle);
 Collisions = move_and_collide(0, V * Move_Speed_Final, Obj_Broder_Battle);
 //红魂
 if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
-    Move_Up = keyboard_check(ord("W")) || keyboard_check(vk_up);
-    Move_Down = keyboard_check(ord("S")) || keyboard_check(vk_down);
-    Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
-    Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
+    Move_Up = Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up);
+    Move_Down = Scr_Input_KeyDown(ord("S")) || Scr_Input_KeyDown(vk_down);
+    Move_Left = Scr_Input_KeyDown(ord("A")) || Scr_Input_KeyDown(vk_left);
+    Move_Right = Scr_Input_KeyDown(ord("D")) || Scr_Input_KeyDown(vk_right);
     H = Move_Right - Move_Left;
     V = Move_Down - Move_Up;
     if (H != 0 && V != 0) {
@@ -107,25 +107,25 @@ if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
 }
 //橙魂
 if (sprite_index == Spr_Soul_Orange && Hp_Final > 0) {
-    if (keyboard_check_pressed(ord("W")) || keyboard_check_pressed(vk_up)) {
+    if (Scr_Input_KeyPressed(ord("W")) || Scr_Input_KeyPressed(vk_up)) {
         Move_Up = true;
         Move_Down = false;
         Move_Left = false;
         Move_Right = false;
     }
-    else if (keyboard_check_pressed(ord("S")) || keyboard_check_pressed(vk_down)) {
+    else if (Scr_Input_KeyPressed(ord("S")) || Scr_Input_KeyPressed(vk_down)) {
         Move_Down = true;
         Move_Up = false;
         Move_Left = false;
         Move_Right = false;
     }
-    else if (keyboard_check_pressed(ord("A")) || keyboard_check_pressed(vk_left)) {
+    else if (Scr_Input_KeyPressed(ord("A")) || Scr_Input_KeyPressed(vk_left)) {
         Move_Left = true;
         Move_Up = false;
         Move_Down = false;
         Move_Right = false;
     }
-    else if (keyboard_check_pressed(ord("D")) || keyboard_check_pressed(vk_right)) {
+    else if (Scr_Input_KeyPressed(ord("D")) || Scr_Input_KeyPressed(vk_right)) {
         Move_Right = true;
         Move_Up = false;
         Move_Down = false;
@@ -140,14 +140,14 @@ if (sprite_index == Spr_Soul_Orange && Hp_Final > 0) {
 }
 //黄魂
 if (sprite_index == Spr_Soul_Yellow && Hp_Final > 0) {
-    if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
+    if (Scr_Input_KeyPressed(ord("Z")) || Scr_Input_KeyPressed(vk_enter)) {
         audio_play_sound(Snd_Soul_Yellow_Shoot_Bullet, 0, false);
         instance_create_depth(x, y - 17, depth, Obj_Bullet_Soul_Yellow);
     }
-    Move_Up = keyboard_check(ord("W")) || keyboard_check(vk_up);
-    Move_Down = keyboard_check(ord("S")) || keyboard_check(vk_down);
-    Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
-    Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
+    Move_Up = Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up);
+    Move_Down = Scr_Input_KeyDown(ord("S")) || Scr_Input_KeyDown(vk_down);
+    Move_Left = Scr_Input_KeyDown(ord("A")) || Scr_Input_KeyDown(vk_left);
+    Move_Right = Scr_Input_KeyDown(ord("D")) || Scr_Input_KeyDown(vk_right);
     H = Move_Right - Move_Left;
     V = Move_Down - Move_Up;
     if (H != 0 && V != 0) {
@@ -160,16 +160,16 @@ if (sprite_index == Spr_Soul_Green && Hp_Final > 0) {
     if (instance_exists(Obj_Shield_Soul_Green) == false) {
         instance_create_depth(x, y, depth, Obj_Shield_Soul_Green);
     }
-    if (keyboard_check_pressed(ord("W")) || keyboard_check_pressed(vk_up)) {
+    if (Scr_Input_KeyPressed(ord("W")) || Scr_Input_KeyPressed(vk_up)) {
         Obj_Shield_Soul_Green.image_angle = 0;
     }
-    else if (keyboard_check_pressed(ord("S")) || keyboard_check_pressed(vk_down)) {
+    else if (Scr_Input_KeyPressed(ord("S")) || Scr_Input_KeyPressed(vk_down)) {
         Obj_Shield_Soul_Green.image_angle = 180;
     }
-    else if (keyboard_check_pressed(ord("A")) || keyboard_check_pressed(vk_left)) {
+    else if (Scr_Input_KeyPressed(ord("A")) || Scr_Input_KeyPressed(vk_left)) {
         Obj_Shield_Soul_Green.image_angle = 90;
     }
-    else if (keyboard_check_pressed(ord("D")) || keyboard_check_pressed(vk_right)) {
+    else if (Scr_Input_KeyPressed(ord("D")) || Scr_Input_KeyPressed(vk_right)) {
         Obj_Shield_Soul_Green.image_angle = 270;
     }
 }
@@ -212,7 +212,7 @@ else {
     visible = true;
 }
 //无敌模式
-if (keyboard_check_pressed(ord("1"))) {
+if (Scr_Input_KeyPressed(ord("1"))) {
     Mode_Invincible = !Mode_Invincible;
 }
 if (Mode_Invincible == false) {
@@ -222,7 +222,7 @@ else {
     Mode_Invincible_print = "开启无敌模式";
 }
 //恢复所有血量
-if (keyboard_check_pressed(ord("3"))) {
+if (Scr_Input_KeyPressed(ord("3"))) {
     Hp_Normal = Hp_Max;
     Hp_Karma = 0;
 }
@@ -244,12 +244,12 @@ if (variable_global_exists("Gloomy_Player")) {
     global.Gloomy_Player.Exp_Next = Exp_Next;
 }
 //输出状态
-if (keyboard_check(ord("2"))) {
+if (Scr_Input_KeyDown(ord("2"))) {
     show_debug_message("Normal_Hp : " + string(Hp_Normal));
     show_debug_message("Karma_Hp : " + string(Hp_Karma));
     show_debug_message("Final_Hp : " + string(Hp_Final));
 }
-if (keyboard_check(ord("1"))) {
+if (Scr_Input_KeyDown(ord("1"))) {
     show_debug_message(Mode_Invincible_print);
 }
 if (Move_Speed_Final < 4) {

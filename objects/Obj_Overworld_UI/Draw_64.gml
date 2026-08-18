@@ -63,6 +63,15 @@ draw_set_font(ui_font >= 0 ? ui_font : -1);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
+var info_value_font = ui_small_font >= 0 ? ui_small_font : ui_font;
+draw_set_font(info_value_font >= 0 ? info_value_font : -1);
+var info_value_x = 46 + string_width("LV  ") * 2;
+draw_set_font(ui_font >= 0 ? ui_font : -1);
+
+ui_item_entries = inventory_get_names();
+ui_box_inventory_entries = inventory_get_names();
+ui_box_chest_entries = chest_get_names();
+
 var player_stats = variable_global_exists("Gloomy_Player")
     ? global.Gloomy_Player
     : {
@@ -82,8 +91,8 @@ var player_hp_text = string(player_stats.Hp_Final) + " / " + string(player_stats
 var player_gold_text = string(player_stats.GOLD);
 var player_atk_text = "AT " + string(player_stats.Atk_Final) + " (" + string(player_stats.Atk_Equip) + ")";
 var player_def_text = "DF " + string(player_stats.Def_Final) + " (" + string(player_stats.Def_Equip) + ")";
-var player_exp_text = "EXP: " + string(player_stats.EXP);
-var player_next_text = "NEXT: " + (player_stats.LV < 20 ? string(player_stats.Exp_Next) : "MAX");
+var player_exp_value = string(player_stats.EXP);
+var player_next_value = (player_stats.LV < 20 ? string(player_stats.Exp_Next) : "MAX");
 
 var info_y = ui_character_below ? 322 : 52;
 draw_panel(32, info_y, 140, 108, ui_scale);
@@ -91,12 +100,12 @@ draw_panel(32, 168, 140, 146, ui_scale);
 
 draw_set_color(c_white);
 draw_ui_text(46, info_y + 8, "GLOOMY", ui_scale);
-draw_small_text(46, info_y + 48, "LV", ui_scale);
-draw_small_text(82, info_y + 48, player_lv_text, ui_scale);
-draw_small_text(46, info_y + 66, "HP", ui_scale);
-draw_small_text(82, info_y + 66, player_hp_text, ui_scale);
-draw_small_text(46, info_y + 84, "G", ui_scale);
-draw_small_text(82, info_y + 84, player_gold_text, ui_scale);
+draw_small_text(46, info_y + 42, "LV", ui_scale);
+draw_small_text(info_value_x, info_y + 42, player_lv_text, ui_scale);
+draw_small_text(46, info_y + 60, "HP", ui_scale);
+draw_small_text(info_value_x, info_y + 60, player_hp_text, ui_scale);
+draw_small_text(46, info_y + 78, "G", ui_scale);
+draw_small_text(info_value_x, info_y + 78, player_gold_text, ui_scale);
 
 draw_set_font(ui_font >= 0 ? ui_font : -1);
 
@@ -122,6 +131,10 @@ switch (ui_page) {
             draw_ui_text(action_x, 360, ui_item_actions[action_index], ui_scale);
         }
 
+        if (ui_item_info_text != "") {
+            draw_small_text(232, 320, ui_item_info_text, ui_scale);
+        }
+
         if (ui_item_focus == 0) {
             draw_cursor(208, 88 + ui_item_selected * 32, ui_scale);
         }
@@ -135,24 +148,53 @@ switch (ui_page) {
         draw_panel(188, 52, 344, 416, ui_scale);
 
         draw_set_color(c_white);
-        draw_ui_text(232, 80, "GLOOMY", ui_scale);
-        draw_small_text(232, 120, "LV " + player_lv_text, ui_scale);
-        draw_small_text(232, 152, "HP " + player_hp_text, ui_scale);
-        draw_small_text(232, 200, player_atk_text, ui_scale);
-        draw_small_text(232, 232, player_def_text, ui_scale);
-        draw_small_text(232, 280, player_exp_text, ui_scale);
-        draw_small_text(232, 312, player_next_text, ui_scale);
-        draw_small_text(232, 360, "GOLD: " + player_gold_text, ui_scale);
+        draw_ui_text(216, 84, "GLOOMY", ui_scale);
+        draw_ui_text(216, 144, "LV " + player_lv_text, ui_scale);
+        draw_ui_text(216, 176, "HP " + player_hp_text, ui_scale);
+        draw_ui_text(216, 240, player_atk_text, ui_scale);
+        draw_ui_text(216, 272, player_def_text, ui_scale);
+        draw_ui_text(216, 332, "EXP", ui_scale);
+        draw_ui_text(384, 332, player_exp_value, ui_scale);
+        draw_ui_text(216, 364, "NEXT", ui_scale);
+        draw_ui_text(384, 364, player_next_value, ui_scale);
+        draw_ui_text(216, 404, "GOLD: " + player_gold_text, ui_scale);
         break;
 
     case 3:
-        draw_panel(188, 52, 344, 268, ui_scale);
+        draw_panel(16, 16, 608, 448, ui_scale);
 
         draw_set_color(c_white);
-        for (var cell_index = 0; cell_index < array_length(ui_cell_entries); cell_index++) {
-            draw_ui_text(232, 80 + cell_index * 32, ui_cell_entries[cell_index], ui_scale);
+        draw_set_halign(fa_center);
+        draw_ui_text(168, 30, "ITEM", ui_scale);
+        draw_ui_text(470, 30, "BOX", ui_scale);
+        draw_set_halign(fa_left);
+
+        for (var box_item_index = 0; box_item_index < array_length(ui_box_inventory_entries); box_item_index++) {
+            draw_ui_text(68, 72 + box_item_index * 32, ui_box_inventory_entries[box_item_index], ui_scale);
         }
-        draw_cursor(208, 88 + ui_cell_selected * 32, ui_scale);
+
+        for (var chest_item_index = 0; chest_item_index < array_length(ui_box_chest_entries); chest_item_index++) {
+            draw_ui_text(370, 72 + chest_item_index * 32, ui_box_chest_entries[chest_item_index], ui_scale);
+        }
+
+        draw_set_color(c_red);
+        for (var empty_inventory_row = array_length(ui_box_inventory_entries); empty_inventory_row < 8; empty_inventory_row++) {
+            draw_line(39, 46 + empty_inventory_row * 16, 129, 46 + empty_inventory_row * 16);
+        }
+        for (var empty_chest_row = array_length(ui_box_chest_entries); empty_chest_row < 10; empty_chest_row++) {
+            draw_line(190, 46 + empty_chest_row * 16, 280, 46 + empty_chest_row * 16);
+        }
+
+        draw_set_color(c_white);
+        draw_line(160, 40, 160, 190);
+        draw_line(161, 40, 161, 190);
+
+        if (ui_box_focus == 0) {
+            draw_cursor(40, 82 + ui_box_selected_inventory * 32, ui_scale);
+        }
+        else {
+            draw_cursor(342, 82 + ui_box_selected_chest * 32, ui_scale);
+        }
         break;
 }
 

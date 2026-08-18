@@ -62,6 +62,18 @@ Temporary Items
 # GMRT build directory
 Build
 
+# Raw Input extension build artifacts
+extensions/*/source/obj/
+extensions/*/source/*.obj
+extensions/*/source/*.lastbuildstate
+extensions/*/source/*.tlog/
+extensions/*/*.exp
+extensions/*/*.lib
+extensions/*/*.pdb
+extensions/*/*.iobj
+extensions/*/*.ipdb
+extensions/*/*.recipe
+
 # Local project files
 /AGENTS.md
 /plans/
