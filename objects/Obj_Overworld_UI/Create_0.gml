@@ -1,3 +1,22 @@
+if (!variable_global_exists("Gloomy_Player")) {
+    global.Gloomy_Player = {
+        LV: 1,
+        EXP: 0,
+        GOLD: 0,
+        Hp_Max: 20,
+        Hp_Normal: 20,
+        Hp_Karma: 0,
+        Hp_Final: 20,
+        Atk_Self: 0,
+        Atk_Equip: 0,
+        Atk_Final: 0,
+        Def_Self: 0,
+        Def_Equip: 0,
+        Def_Final: 0,
+        Exp_Next: 20
+    };
+}
+
 ui_state = 0;
 ui_page = 0;
 ui_main_selected = 0;

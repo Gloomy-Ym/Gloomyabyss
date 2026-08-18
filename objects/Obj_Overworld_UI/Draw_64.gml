@@ -63,6 +63,28 @@ draw_set_font(ui_font >= 0 ? ui_font : -1);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
+var player_stats = variable_global_exists("Gloomy_Player")
+    ? global.Gloomy_Player
+    : {
+        LV: 1,
+        EXP: 0,
+        GOLD: 0,
+        Hp_Max: 20,
+        Hp_Final: 20,
+        Atk_Final: 0,
+        Atk_Equip: 0,
+        Def_Final: 0,
+        Def_Equip: 0,
+        Exp_Next: 20
+    };
+var player_lv_text = string(player_stats.LV);
+var player_hp_text = string(player_stats.Hp_Final) + " / " + string(player_stats.Hp_Max);
+var player_gold_text = string(player_stats.GOLD);
+var player_atk_text = "AT " + string(player_stats.Atk_Final) + " (" + string(player_stats.Atk_Equip) + ")";
+var player_def_text = "DF " + string(player_stats.Def_Final) + " (" + string(player_stats.Def_Equip) + ")";
+var player_exp_text = "EXP: " + string(player_stats.EXP);
+var player_next_text = "NEXT: " + (player_stats.LV < 20 ? string(player_stats.Exp_Next) : "MAX");
+
 var info_y = ui_character_below ? 322 : 52;
 draw_panel(32, info_y, 140, 108, ui_scale);
 draw_panel(32, 168, 140, 146, ui_scale);
@@ -70,11 +92,11 @@ draw_panel(32, 168, 140, 146, ui_scale);
 draw_set_color(c_white);
 draw_ui_text(46, info_y + 8, "GLOOMY", ui_scale);
 draw_small_text(46, info_y + 48, "LV", ui_scale);
-draw_small_text(82, info_y + 48, "1", ui_scale);
+draw_small_text(82, info_y + 48, player_lv_text, ui_scale);
 draw_small_text(46, info_y + 66, "HP", ui_scale);
-draw_small_text(82, info_y + 66, "20 / 20", ui_scale);
+draw_small_text(82, info_y + 66, player_hp_text, ui_scale);
 draw_small_text(46, info_y + 84, "G", ui_scale);
-draw_small_text(82, info_y + 84, "0", ui_scale);
+draw_small_text(82, info_y + 84, player_gold_text, ui_scale);
 
 draw_set_font(ui_font >= 0 ? ui_font : -1);
 
@@ -114,13 +136,13 @@ switch (ui_page) {
 
         draw_set_color(c_white);
         draw_ui_text(232, 80, "GLOOMY", ui_scale);
-        draw_small_text(232, 120, "LV 1", ui_scale);
-        draw_small_text(232, 152, "HP 20 / 20", ui_scale);
-        draw_small_text(232, 200, "AT 0 (0)", ui_scale);
-        draw_small_text(232, 232, "DF 0 (0)", ui_scale);
-        draw_small_text(232, 280, "EXP: 0", ui_scale);
-        draw_small_text(232, 312, "NEXT: 10", ui_scale);
-        draw_small_text(232, 360, "GOLD: 0", ui_scale);
+        draw_small_text(232, 120, "LV " + player_lv_text, ui_scale);
+        draw_small_text(232, 152, "HP " + player_hp_text, ui_scale);
+        draw_small_text(232, 200, player_atk_text, ui_scale);
+        draw_small_text(232, 232, player_def_text, ui_scale);
+        draw_small_text(232, 280, player_exp_text, ui_scale);
+        draw_small_text(232, 312, player_next_text, ui_scale);
+        draw_small_text(232, 360, "GOLD: " + player_gold_text, ui_scale);
         break;
 
     case 3:

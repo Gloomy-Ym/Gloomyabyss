@@ -2,6 +2,12 @@
 if (LV > 20) {
     LV = 20;
 }
+if (LV < 20) {
+    Exp_Next = 20;
+}
+else {
+    Exp_Next = 0;
+}
 //升级升Hp逻辑
 if (EXP >= 20 && LV < 20) {
     LV += 1;
@@ -13,12 +19,12 @@ if (LV < 20) {
 else if (LV == 20) {
     Hp_Max = 99;
 }
-//Final_Atk和Final_Def计算逻辑
-Atk_Final = Atk_Self + Atk_Equip;
-Def_Final = Def_Self + Def_Equip;
 //升级升Atk_Self和Def_Self逻辑
 Atk_Self = 2 * (LV - 1);
 Def_Self = floor((LV - 1) * 0.25);
+//Final_Atk和Final_Def计算逻辑
+Atk_Final = Atk_Self + Atk_Equip;
+Def_Final = Def_Self + Def_Equip;
 //Hp计算逻辑
 if (Hp_Normal <= 0) {
     Hp_Normal = 0;
@@ -219,6 +225,23 @@ else {
 if (keyboard_check_pressed(ord("3"))) {
     Hp_Normal = Hp_Max;
     Hp_Karma = 0;
+}
+//同步到全局，供大世界菜单等界面读取真实数值
+if (variable_global_exists("Gloomy_Player")) {
+    global.Gloomy_Player.LV = LV;
+    global.Gloomy_Player.EXP = EXP;
+    global.Gloomy_Player.GOLD = GOLD;
+    global.Gloomy_Player.Hp_Max = Hp_Max;
+    global.Gloomy_Player.Hp_Normal = Hp_Normal;
+    global.Gloomy_Player.Hp_Karma = Hp_Karma;
+    global.Gloomy_Player.Hp_Final = Hp_Final;
+    global.Gloomy_Player.Atk_Self = Atk_Self;
+    global.Gloomy_Player.Atk_Equip = Atk_Equip;
+    global.Gloomy_Player.Atk_Final = Atk_Final;
+    global.Gloomy_Player.Def_Self = Def_Self;
+    global.Gloomy_Player.Def_Equip = Def_Equip;
+    global.Gloomy_Player.Def_Final = Def_Final;
+    global.Gloomy_Player.Exp_Next = Exp_Next;
 }
 //输出状态
 if (keyboard_check(ord("2"))) {

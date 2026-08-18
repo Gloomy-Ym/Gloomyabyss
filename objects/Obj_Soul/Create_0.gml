@@ -1,18 +1,38 @@
+if (!variable_global_exists("Gloomy_Player")) {
+    global.Gloomy_Player = {
+        LV: 1,
+        EXP: 0,
+        GOLD: 0,
+        Hp_Max: 20,
+        Hp_Normal: 20,
+        Hp_Karma: 0,
+        Hp_Final: 20,
+        Atk_Self: 0,
+        Atk_Equip: 0,
+        Atk_Final: 0,
+        Def_Self: 0,
+        Def_Equip: 0,
+        Def_Final: 0,
+        Exp_Next: 20
+    };
+}
+
 //血量
-Hp_Max = 500;
-Hp_Final= Hp_Max;
-Hp_Normal = Hp_Final;
-Hp_Karma = 0;
+Hp_Max = global.Gloomy_Player.Hp_Max;
+Hp_Normal = global.Gloomy_Player.Hp_Normal;
+Hp_Karma = global.Gloomy_Player.Hp_Karma;
+Hp_Final = global.Gloomy_Player.Hp_Final;
 //等级与经验
-LV = 1;
-EXP = 0;
+LV = global.Gloomy_Player.LV;
+EXP = global.Gloomy_Player.EXP;
+GOLD = global.Gloomy_Player.GOLD;
 //攻防
-Atk_Final = 0;
-Atk_Self = 0;
-Atk_Equip = 0;
-Def_Final = 0;
-Def_Self = 0;
-Def_Equip = 0;
+Atk_Final = global.Gloomy_Player.Atk_Final;
+Atk_Self = global.Gloomy_Player.Atk_Self;
+Atk_Equip = global.Gloomy_Player.Atk_Equip;
+Def_Final = global.Gloomy_Player.Def_Final;
+Def_Self = global.Gloomy_Player.Def_Self;
+Def_Equip = global.Gloomy_Player.Def_Equip;
 //移速
 Move_Speed = 4;
 Move_Speed_Modifier_Hold_X_Or_Shift = 0.5;
