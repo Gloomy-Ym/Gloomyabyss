@@ -7,7 +7,22 @@ var left_pressed = Scr_Input_LeftPressed();
 var right_pressed = Scr_Input_RightPressed();
 
 if (ui_state == 0) {
-    if (toggle_pressed) {
+    var opened_chest = false;
+    if (confirm_pressed && instance_exists(Obj_Soul)) {
+        var soul_id = instance_find(Obj_Soul, 0);
+        var chest_id = instance_nearest(soul_id.x, soul_id.y, Obj_Ender_Chest);
+        if (chest_id != noone && point_distance(soul_id.x, soul_id.y, chest_id.x + 10, chest_id.y + 10) <= 28) {
+            audio_play_sound(Snd_Menu_Selection, 0, false);
+            ui_state = 1;
+            ui_page = 4;
+            ui_box_focus = 0;
+            ui_box_selected_inventory = 0;
+            ui_box_selected_chest = 0;
+            opened_chest = true;
+        }
+    }
+
+    if (!opened_chest && toggle_pressed) {
         audio_play_sound(Snd_Menu_Select, 0, false);
         ui_state = 1;
         ui_page = 0;
@@ -56,9 +71,7 @@ else if (ui_page == 0) {
             ui_action_selected = 0;
         }
         if (ui_page == 3) {
-            ui_box_focus = 0;
-            ui_box_selected_inventory = 0;
-            ui_box_selected_chest = 0;
+            ui_cell_selected = 0;
         }
         audio_play_sound(Snd_Menu_Selection, 0, false);
     }
@@ -127,7 +140,7 @@ else if (ui_page == 1) {
         }
     }
 }
-else if (ui_page == 3) {
+else if (ui_page == 4) {
     if (left_pressed && ui_box_focus == 1) {
         ui_box_focus = 0;
         audio_play_sound(Snd_Menu_Select, 0, false);
@@ -180,6 +193,27 @@ else if (ui_page == 3) {
             }
         }
         audio_play_sound(Snd_Menu_Selection, 0, false);
+    }
+}
+else if (ui_page == 3) {
+    var cell_count = array_length(ui_cell_entries);
+    if (cell_count > 0 && up_pressed) {
+        var previous_cell_selected = ui_cell_selected;
+        ui_cell_selected = (ui_cell_selected + cell_count - 1) mod cell_count;
+        if (ui_cell_selected != previous_cell_selected) {
+            audio_play_sound(Snd_Menu_Select, 0, false);
+        }
+    }
+    else if (cell_count > 0 && down_pressed) {
+        var previous_cell_selected = ui_cell_selected;
+        ui_cell_selected = (ui_cell_selected + 1) mod cell_count;
+        if (ui_cell_selected != previous_cell_selected) {
+            audio_play_sound(Snd_Menu_Select, 0, false);
+        }
+    }
+
+    if (confirm_pressed && cell_count > 0) {
+        audio_play_sound(Snd_Phone, 0, false);
     }
 }
 

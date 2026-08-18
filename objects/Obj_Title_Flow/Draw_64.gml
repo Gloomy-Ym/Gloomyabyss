@@ -49,9 +49,81 @@ switch (title_state) {
         draw_text(center_x, 216, "Z / ENTER - SELECT");
         break;
 
+    case 7:
+        draw_text(center_x, 48, "WORLD MANAGER");
+        var world_count = Scr_Save_GetWorldCount();
+        for (var save_i = 0; save_i < world_count; save_i++) {
+            var world = Scr_Save_GetWorld(save_i);
+            var world_name = (world != undefined ? world.name : "WORLD " + string(save_i + 1));
+            var save_label = world_name;
+            if (save_i == title_world_selected) {
+                save_label = "> " + save_label;
+            }
+            draw_text(center_x, 92 + save_i * 28, save_label);
+        }
+        var new_world_label = (title_world_selected == world_count ? "> " : "") + "NEW WORLD";
+        draw_text(center_x, 92 + world_count * 28, new_world_label);
+        var back_label = (title_world_selected == world_count + 1 ? "> " : "") + "BACK";
+        draw_text(center_x, 92 + (world_count + 1) * 28, back_label);
+        draw_text(center_x, 216, "Z / ENTER - SELECT");
+        break;
+
+    case 8:
+        var selected_action_world = Scr_Save_GetWorld(title_world_selected);
+        var action_world_name = (selected_action_world != undefined ? selected_action_world.name : "WORLD");
+        draw_text(center_x, 48, "WORLD ACTIONS");
+        draw_text(center_x, 72, action_world_name);
+        for (var action_i = 0; action_i < array_length(title_world_actions); action_i++) {
+            var action_label = title_world_actions[action_i];
+            if (action_i == title_world_action_selected) {
+                action_label = "> " + action_label;
+            }
+            draw_text(center_x, 108 + action_i * 28, action_label);
+        }
+        draw_text(center_x, 216, "X / SHIFT - BACK");
+        break;
+
+    case 9:
+    case 10:
+    case 12:
+        draw_text(center_x, 48, title_world_text_prompt);
+        draw_text(center_x, 96, keyboard_string + "_");
+        draw_text(center_x, 144, "Z / ENTER - CONFIRM");
+        draw_text(center_x, 168, "X / SHIFT - CANCEL");
+        break;
+
+    case 11:
+        var delete_world = Scr_Save_GetWorld(title_world_selected);
+        var delete_world_name = (delete_world != undefined ? delete_world.name : "WORLD");
+        draw_text(center_x, 48, "DELETE WORLD?");
+        draw_text(center_x, 80, delete_world_name);
+        var no_label = (title_world_confirm_delete == 0 ? "> " : "") + "NO";
+        var yes_label = (title_world_confirm_delete == 1 ? "> " : "") + "YES";
+        draw_text(center_x, 128, no_label);
+        draw_text(center_x, 156, yes_label);
+        draw_text(center_x, 200, "Z / ENTER - CONFIRM");
+        break;
+
     case 5:
-        draw_text(center_x, 96, "SETTINGS PLACEHOLDER");
-        draw_text(center_x, 128, "X / SHIFT - BACK");
+        draw_text(center_x, 48, "SETTINGS");
+        for (var setting_i = 0; setting_i < array_length(title_settings_entries); setting_i++) {
+            var setting_label = title_settings_entries[setting_i];
+            if (setting_i == title_settings_selected) {
+                setting_label = "> " + setting_label;
+            }
+            draw_text(center_x, 92 + setting_i * 28, setting_label);
+        }
+        draw_text(center_x, 216, "X / SHIFT - BACK");
+        break;
+
+    case 13:
+        draw_text(center_x, 48, "CLEAR ALL SAVES?");
+        draw_text(center_x, 80, "THIS CANNOT BE UNDONE");
+        var clear_no_label = (title_clear_saves_confirm == 0 ? "> " : "") + "NO";
+        var clear_yes_label = (title_clear_saves_confirm == 1 ? "> " : "") + "YES";
+        draw_text(center_x, 128, clear_no_label);
+        draw_text(center_x, 156, clear_yes_label);
+        draw_text(center_x, 200, "Z / ENTER - CONFIRM");
         break;
 
     case 6:

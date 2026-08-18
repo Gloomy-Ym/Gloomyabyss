@@ -160,7 +160,7 @@ switch (ui_page) {
         draw_ui_text(216, 404, "GOLD: " + player_gold_text, ui_scale);
         break;
 
-    case 3:
+    case 4:
         draw_panel(16, 16, 608, 448, ui_scale);
 
         draw_set_color(c_white);
@@ -195,6 +195,20 @@ switch (ui_page) {
         else {
             draw_cursor(342, 82 + ui_box_selected_chest * 32, ui_scale);
         }
+        break;
+
+    case 3:
+        draw_panel(188, 52, 344, 268, ui_scale);
+
+        draw_set_color(c_white);
+        draw_ui_text(232, 80, "CELL", ui_scale);
+        for (var cell_index = 0; cell_index < array_length(ui_cell_entries); cell_index++) {
+            draw_ui_text(232, 112 + cell_index * 32, ui_cell_entries[cell_index], ui_scale);
+        }
+        if (array_length(ui_cell_entries) > 0) {
+            draw_cursor(208, 120 + ui_cell_selected * 32, ui_scale);
+        }
+        draw_small_text(232, 272, "Z / ENTER - CALL", ui_scale);
         break;
 }
 

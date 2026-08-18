@@ -35,10 +35,10 @@ ui_item_focus = 0;
 ui_action_selected = 0;
 ui_cell_selected = 0;
 
-ui_main_entries = ["ITEM", "STAT", "BOX"];
+ui_main_entries = ["ITEM", "STAT", "CELL"];
 ui_item_entries = [];
 ui_item_actions = ["USE", "INFO", "DROP"];
-ui_cell_entries = [];
+ui_cell_entries = ["TORIEL"];
 ui_box_inventory_entries = [];
 ui_box_chest_entries = [];
 ui_box_focus = 0;

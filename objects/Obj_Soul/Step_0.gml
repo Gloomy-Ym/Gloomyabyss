@@ -38,6 +38,9 @@ else if (Hp_Karma < 0) {
     Hp_Karma = 0;
 }
 Hp_Final = Hp_Normal + Hp_Karma;
+var overworld_menu_open = variable_global_exists("Gloomy_Overworld_UI_Open") && global.Gloomy_Overworld_UI_Open;
+var solid_collision_objects = [Obj_Broder_Battle, Obj_Ender_Chest];
+
 //移速与移动计算逻辑
 if (Scr_Input_KeyDown(ord("X")) || Scr_Input_KeyDown(vk_shift)) {
     Move_Speed_Final = Move_Speed * Move_Speed_Modifier_Penalty * Move_Speed_Modifier_Hold_X_Or_Shift;
@@ -90,19 +93,33 @@ if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
     //垂直方向 = 往下掉的速度 减去 往上飞的速度（往上飞时是负数，就代表向上）
     V = Move_Down - Move_Up;
 }
-move_and_collide(H * Move_Speed_Final, 0, Obj_Broder_Battle);
-Collisions = move_and_collide(0, V * Move_Speed_Final, Obj_Broder_Battle);
+if (overworld_menu_open) {
+    H = 0;
+    V = 0;
+}
+move_and_collide(H * Move_Speed_Final, 0, solid_collision_objects);
+Collisions = move_and_collide(0, V * Move_Speed_Final, solid_collision_objects);
 //红魂
 if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
-    Move_Up = Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up);
-    Move_Down = Scr_Input_KeyDown(ord("S")) || Scr_Input_KeyDown(vk_down);
-    Move_Left = Scr_Input_KeyDown(ord("A")) || Scr_Input_KeyDown(vk_left);
-    Move_Right = Scr_Input_KeyDown(ord("D")) || Scr_Input_KeyDown(vk_right);
-    H = Move_Right - Move_Left;
-    V = Move_Down - Move_Up;
-    if (H != 0 && V != 0) {
-        H *= 0.707;
-        V *= 0.707;
+    if (!overworld_menu_open) {
+        Move_Up = Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up);
+        Move_Down = Scr_Input_KeyDown(ord("S")) || Scr_Input_KeyDown(vk_down);
+        Move_Left = Scr_Input_KeyDown(ord("A")) || Scr_Input_KeyDown(vk_left);
+        Move_Right = Scr_Input_KeyDown(ord("D")) || Scr_Input_KeyDown(vk_right);
+        H = Move_Right - Move_Left;
+        V = Move_Down - Move_Up;
+        if (H != 0 && V != 0) {
+            H *= 0.707;
+            V *= 0.707;
+        }
+    }
+    else {
+        Move_Up = false;
+        Move_Down = false;
+        Move_Left = false;
+        Move_Right = false;
+        H = 0;
+        V = 0;
     }
 }
 //橙魂
