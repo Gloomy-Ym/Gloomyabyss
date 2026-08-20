@@ -8,10 +8,10 @@ var right_pressed = Scr_Input_RightPressed();
 
 if (ui_state == 0) {
     var opened_chest = false;
-    if (confirm_pressed && instance_exists(Obj_Soul)) {
-        var soul_id = instance_find(Obj_Soul, 0);
-        var chest_id = instance_nearest(soul_id.x, soul_id.y, Obj_Ender_Chest);
-        if (chest_id != noone && point_distance(soul_id.x, soul_id.y, chest_id.x + 10, chest_id.y + 10) <= 28) {
+    if (confirm_pressed && instance_exists(Obj_Player)) {
+        var player_id = instance_find(Obj_Player, 0);
+        var chest_id = instance_nearest(player_id.x, player_id.y, Obj_Ender_Chest);
+        if (chest_id != noone && point_distance(player_id.x, player_id.y, chest_id.x + 10, chest_id.y + 10) <= 28) {
             audio_play_sound(Snd_Menu_Selection, 0, false);
             ui_state = 1;
             ui_page = 4;

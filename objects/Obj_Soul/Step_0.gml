@@ -260,6 +260,13 @@ if (variable_global_exists("Gloomy_Player")) {
     global.Gloomy_Player.Def_Final = Def_Final;
     global.Gloomy_Player.Exp_Next = Exp_Next;
 }
+
+if (Hp_Final <= 0 && (!variable_global_exists("Gloomy_Death_Triggered") || !global.Gloomy_Death_Triggered)) {
+    global.Gloomy_Death_Triggered = true;
+    room_goto(Death_Room);
+    exit;
+}
+
 //输出状态
 if (Scr_Input_KeyDown(ord("2"))) {
     show_debug_message("Normal_Hp : " + string(Hp_Normal));

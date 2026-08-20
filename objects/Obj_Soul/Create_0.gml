@@ -17,6 +17,8 @@ if (!variable_global_exists("Gloomy_Player")) {
     };
 }
 
+global.Gloomy_Death_Triggered = false;
+
 //血量
 Hp_Max = global.Gloomy_Player.Hp_Max;
 Hp_Normal = global.Gloomy_Player.Hp_Normal;
