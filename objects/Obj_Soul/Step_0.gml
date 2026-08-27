@@ -149,6 +149,16 @@ if (sprite_index == Spr_Soul_Blue) {
 	Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
     Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
     H = Move_Right - Move_Left;
+    if (!place_meeting(0, 0, Obj_Broder_Battle) && Move_Up == 0) {
+    	Move_Down = 2;
+    }
+    if (keyboard_check(ord("W")) || keyboard_check(vk_up)) {
+    	Move_Up = 4;
+    }
+    else {
+    	Move_Up = false;
+    }
+    V = Move_Down - Move_Up;
 }
 //移速与移动计算逻辑
 if (Scr_Input_KeyDown(ord("X")) || Scr_Input_KeyDown(vk_shift)) {
