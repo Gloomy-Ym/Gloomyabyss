@@ -144,54 +144,11 @@ if (sprite_index == Spr_Soul_Cyan && Hp_Final > 0) {
         V *= 0.707;
     }
 }
-//蓝魂（移动前：先把玩家按的键读出来，再算出这一帧要往哪飞）
-//这里必须放在 move_and_collide 之前，这样算出来的速度才能当帧就用上，不会慢半拍
-if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
-    //左右：按住 A/← 往左，按住 D/→ 往右。两个方向用数字相减，结果只能是 -1、0 或 1
-    Move_Left = Scr_Input_KeyDown(ord("A")) || Scr_Input_KeyDown(vk_left);
-    Move_Right = Scr_Input_KeyDown(ord("D")) || Scr_Input_KeyDown(vk_right);
+//蓝魂
+if (sprite_index == Spr_Soul_Blue) {
+	Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
+    Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
     H = Move_Right - Move_Left;
-
-    //Move_Jump 是“站在地上”的标志。true 表示脚踩在地上、还没跳起来
-    if (Move_Jump == true) {
-        //站在地上时按了 W/↑，就开始起跳
-        if (Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up)) {
-            Move_Up = 1.5;          //往上飞的速度：2
-            Move_Jump = false;    //已经离开地面，不再算“站在地上”
-            Move_Jump_Timer = 0;  //重置按住跳跃的计时器
-        }
-        else {
-            Move_Up = 0;          //没按跳跃，就不往上飞
-        }
-        Move_Down = 0;            //站在地上时不受重力，往下掉的速度清零
-    }
-    else {
-        //已经离开地面了：只要还按着 W/↑ 且计时器没到 15，就一直保持上升
-        //这样“长按跳更高，短按跳得矮”
-        if ((Scr_Input_KeyDown(ord("W")) || Scr_Input_KeyDown(vk_up)) && Move_Jump_Timer < 15) {
-            Move_Up = 1.5;          //保持上升速度
-            Move_Jump_Timer += 1; //每帧多算一次，用来限制最长上升时间
-        }
-        else {
-            Move_Up = 0;          //松开了或者时间到，就停止上升，交给重力往下拉
-        }
-        //重力：每帧把往下掉的速度加一点，最多加到 1，别掉得太快
-        Move_Down = min(Move_Down + 0.05, 1);
-    }
-
-    //垂直方向 = 往下掉的速度 减去 往上飞的速度（往上飞时是负数，就代表向上）
-    V = Move_Down - Move_Up;
-}
-//蓝魂（移动后：检查是不是撞到地板了，撞到就重新算作“落地”）
-//Collisions 是上面 move_and_collide 返回的结果，撞到东西时它的长度会大于 0
-if (sprite_index == Spr_Soul_Blue && Hp_Final > 0) {
-    //两个条件同时满足才是“落地”：确实撞到了东西，而且这一帧是在往下掉（V > 0）
-    //如果是在往上飞时撞到东西，就不会被误判成落地
-    if (array_length(Collisions) > 0 && V > 0) {
-        Move_Jump = true;  //重新标记为“站在地上”，这样就能再次起跳
-        Move_Down = 0;     //往下掉的速度清零
-        Move_Up = 0;       //往上飞的速度也清零，安安稳稳站在地上
-    }
 }
 //移速与移动计算逻辑
 if (Scr_Input_KeyDown(ord("X")) || Scr_Input_KeyDown(vk_shift)) {
