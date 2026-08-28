@@ -47,6 +47,7 @@ Move_Left = false;
 Move_Right = false;
 Move_Jump = false;
 Move_Jump_Timer = 0;
+Move_Fall = 0;
 H = 0;
 V = 0;
 //无敌帧
@@ -57,3 +58,4 @@ Mode_Invincible = false;
 Mode_Invincible_print = "开启无敌模式"
 visible = true;
 depth = 0;
+Collisions = 0;

@@ -149,16 +149,26 @@ if (sprite_index == Spr_Soul_Blue) {
 	Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
     Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
     H = Move_Right - Move_Left;
-    if (!place_meeting(0, 0, Obj_Broder_Battle) && Move_Up == 0) {
-    	Move_Down = 2;
-    }
-    if (keyboard_check(ord("W")) || keyboard_check(vk_up)) {
-    	Move_Up = 4;
+    if (array_length(Collisions) == 0 && Move_Jump == false) {
+    	Move_Fall = 4;
     }
     else {
-    	Move_Up = false;
+    	Move_Fall = 0;
     }
-    V = Move_Down - Move_Up;
+    if ((keyboard_check(ord("W")) || keyboard_check(vk_up)) && Move_Jump_Timer < 30) {
+    	Move_Jump = -4;
+        Move_Jump_Timer += 1;
+    }
+    if (keyboard_check_released(ord("W")) || keyboard_check_released(vk_up)) {
+    	Move_Jump_Timer = 30;
+    }
+    if (Move_Jump_Timer >= 30) {
+    	Move_Jump = 0;
+    }
+    if (array_length(Collisions) > 0) {
+    	Move_Jump = false;
+        Move_Jump_Timer = 0;
+    }
 }
 //移速与移动计算逻辑
 if (Scr_Input_KeyDown(ord("X")) || Scr_Input_KeyDown(vk_shift)) {
@@ -179,7 +189,9 @@ if (overworld_menu_open) {
     V = 0;
 }
 move_and_collide(H * Move_Speed_Final, 0, solid_collision_objects);
-Collisions = move_and_collide(0, V * Move_Speed_Final, solid_collision_objects);
+move_and_collide(0, V * Move_Speed_Final, solid_collision_objects);
+move_and_collide(0, Move_Jump, solid_collision_objects);
+Collisions = move_and_collide(0, Move_Fall, solid_collision_objects);
 //减少无敌帧与闪烁
 if (Invincible_Frames > 0) {
     Invincible_Frames -= 1;
