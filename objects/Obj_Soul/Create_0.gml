@@ -37,17 +37,24 @@ Def_Self = global.Gloomy_Player.Def_Self;
 Def_Equip = global.Gloomy_Player.Def_Equip;
 //移速
 Move_Speed = 4;
+Move_Speed_Jump = -7;
+Move_Speed_Fall = 3;
+Move_Speed_GD = 0.4;
+Move_Speed_G = 0.8;
 Move_Speed_Modifier_Hold_X_Or_Shift = 0.5;
 Move_Speed_Modifier_Penalty = 1;
 Move_Speed_Modifier_Penalty_Timer = 0;
 //移动方向
-Move_Up = false
+Move_Up = false;
 Move_Down = false;
 Move_Left = false;
 Move_Right = false;
 Move_Jump = false;
+Move_Fall = false;
 Move_Jump_Timer = 0;
-Move_Fall = 0;
+Move_Jump_NGD_Timer = 0;
+Move_Fall_NG_Timer = 0;
+Move_Hang_Timer = 0;
 H = 0;
 V = 0;
 //无敌帧
@@ -58,4 +65,4 @@ Mode_Invincible = false;
 Mode_Invincible_print = "开启无敌模式"
 visible = true;
 depth = 0;
-Collisions = 0;
+On_Ground = false;

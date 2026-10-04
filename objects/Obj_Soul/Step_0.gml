@@ -149,25 +149,49 @@ if (sprite_index == Spr_Soul_Blue) {
 	Move_Left = keyboard_check(ord("A")) || keyboard_check(vk_left);
     Move_Right = keyboard_check(ord("D")) || keyboard_check(vk_right);
     H = Move_Right - Move_Left;
-    if (array_length(Collisions) == 0 && Move_Jump == false) {
-    	Move_Fall = 4;
+    On_Ground = place_meeting(x, y + Move_Speed_Fall, solid_collision_objects);
+    if ((keyboard_check(ord("W")) || keyboard_check(vk_up)) && On_Ground == true) {
+    	Move_Jump = true;
+        Move_Hang_Timer = 0;
+    }
+    if (Move_Jump == true && Move_Jump_NGD_Timer < 3) {
+    	Move_Jump_NGD_Timer += 1;
+    }
+    if (Move_Jump_NGD_Timer >= 3) {
+    	Move_Speed_Jump += Move_Speed_GD;
+    }
+    if (Move_Jump == false) {
+    	Move_Jump_NGD_Timer = 0;
+        Move_Speed_Jump = -7;
+    }
+    if (On_Ground == false && Move_Jump_Timer < 18) {
+    	Move_Jump_Timer += 1;
+    }
+    if ((keyboard_check_released(ord("W")) || keyboard_check_released(vk_up)) || Move_Jump_Timer >= 18 || Move_Jump == false) {
+        Move_Jump = false;
+    }
+    if (Move_Jump == false && On_Ground == false && Move_Hang_Timer < 3) {
+    	Move_Hang_Timer += 1;
+    }
+    if (On_Ground == true) {
+    	Move_Hang_Timer = 0;
+        Move_Jump_Timer = 0;
+    }
+    if (On_Ground == true || Move_Jump == true || Move_Hang_Timer < 3) {
+    	Move_Fall = false;
     }
     else {
-    	Move_Fall = 0;
+    	Move_Fall = true;
     }
-    if ((keyboard_check(ord("W")) || keyboard_check(vk_up)) && Move_Jump_Timer < 30) {
-    	Move_Jump = -4;
-        Move_Jump_Timer += 1;
+    if (Move_Fall == true && Move_Fall_NG_Timer < 3) {
+    	Move_Fall_NG_Timer += 1;
     }
-    if (keyboard_check_released(ord("W")) || keyboard_check_released(vk_up)) {
-    	Move_Jump_Timer = 30;
+    if (Move_Fall_NG_Timer >= 3) {
+    	Move_Speed_Fall += Move_Speed_G;
     }
-    if (Move_Jump_Timer >= 30) {
-    	Move_Jump = 0;
-    }
-    if (array_length(Collisions) > 0) {
-    	Move_Jump = false;
-        Move_Jump_Timer = 0;
+    if (Move_Fall == false) {
+    	Move_Fall_NG_Timer = 0;
+        Move_Speed_Fall = 3;
     }
 }
 //移速与移动计算逻辑
@@ -190,8 +214,12 @@ if (overworld_menu_open) {
 }
 move_and_collide(H * Move_Speed_Final, 0, solid_collision_objects);
 move_and_collide(0, V * Move_Speed_Final, solid_collision_objects);
-move_and_collide(0, Move_Jump, solid_collision_objects);
-Collisions = move_and_collide(0, Move_Fall, solid_collision_objects);
+if (sprite_index == Spr_Soul_Blue && Move_Jump == true) {
+	move_and_collide(0, Move_Speed_Jump, solid_collision_objects);
+}
+if (sprite_index == Spr_Soul_Blue && Move_Fall == true) {
+	move_and_collide(0, Move_Speed_Fall, solid_collision_objects);
+}
 //减少无敌帧与闪烁
 if (Invincible_Frames > 0) {
     Invincible_Frames -= 1;
