@@ -155,7 +155,7 @@ if (sprite_index == Spr_Soul_Blue) {
         Move_Speed_Fall = 0;
         if (keyboard_check(ord("W")) || keyboard_check(vk_up)) {
             Move_Jump = true;
-            Move_Speed_Jump = -6;
+            Move_Speed_Jump = -8;
         }
     }
     if (On_Ground == false) {

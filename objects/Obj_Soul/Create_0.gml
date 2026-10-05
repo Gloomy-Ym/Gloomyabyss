@@ -37,11 +37,11 @@ Def_Self = global.Gloomy_Player.Def_Self;
 Def_Equip = global.Gloomy_Player.Def_Equip;
 //移速
 Move_Speed = 4;
-Move_Speed_Jump = -6;
-Move_Speed_Jump_Gravity = 0.2;
+Move_Speed_Jump = -8;
+Move_Speed_Jump_Gravity = 0.25;
 Move_Speed_Jump_Min = 0;
 Move_Speed_Fall = 0;
-Move_Speed_Fall_Gravity = 0.2;
+Move_Speed_Fall_Gravity = 0.25;
 Move_Speed_Fall_Max = 20;
 Move_Speed_Modifier_Hold_X_Or_Shift = 0.5;
 Move_Speed_Modifier_Penalty = 1;
