@@ -194,8 +194,8 @@ if (overworld_menu_open) {
     H = 0;
     V = 0;
 }
-move_and_collide(H * Move_Speed_Final, 0, solid_collision_objects);
-move_and_collide(0, V * Move_Speed_Final, solid_collision_objects);
+x += H * Move_Speed_Final;
+y += V * Move_Speed_Final;
 if (sprite_index == Spr_Soul_Blue) {
 	if (Move_Jump == true) {
         move_and_collide(0, Move_Speed_Jump, solid_collision_objects);

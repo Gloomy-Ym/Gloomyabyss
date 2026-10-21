@@ -1,19 +1,22 @@
 {
   "$GMObject":"",
-  "%Name":"Obj_Parent_Bullet",
+  "%Name":"Obj_Test_Cyan_Bullet",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"Obj_Parent_Bullet",
+  "name":"Obj_Test_Cyan_Bullet",
   "overriddenProperties":[],
   "parent":{
-    "name":"Parent",
-    "path":"folders/Objects/Parent.yy",
+    "name":"Bullet",
+    "path":"folders/Objects/Bullet.yy",
   },
-  "parentObjectId":null,
-  "persistent":true,
+  "parentObjectId":{
+    "name":"Obj_Parent_Cyan_Bullet",
+    "path":"objects/Obj_Parent_Cyan_Bullet/Obj_Parent_Cyan_Bullet.yy",
+  },
+  "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
   "physicsFriction":0.2,
@@ -26,13 +29,14 @@
   "physicsShape":1,
   "physicsShapePoints":[],
   "physicsStartAwake":true,
-  "properties":[
-    {"$GMObjectProperty":"v2","%Name":"variable_name","filters":[],"listItems":[],"multiselect":false,"name":"variable_name","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"0.0","varType":0,},
-  ],
+  "properties":[],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"Spr_Test_Cyan_Bullet",
+    "path":"sprites/Spr_Test_Cyan_Bullet/Spr_Test_Cyan_Bullet.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }
