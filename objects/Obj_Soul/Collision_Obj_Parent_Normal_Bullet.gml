@@ -21,6 +21,13 @@ if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0) {
     else if (Hp_Karma == 0 && Hp_Normal == 1) {
         Hp_Normal -= max(1, other.Damage_Normal - Def_Final);
     }
+    if (Hp_Karma < 0) {
+    	Hp_Normal += Hp_Karma;
+        Hp_Karma = 0;
+    }
+    if (Hp_Normal < 0) {
+    	Hp_Normal = 0;
+    }
     if (other.Delete_Collision == true) {
         instance_destroy(other);
     }
