@@ -1,6 +1,6 @@
 {
   "$GMSound":"v2",
-  "%Name":"Snd_Power",
+  "%Name":"Snd_Heal",
   "audioGroupId":{
     "name":"audiogroup_default",
     "path":"audiogroups/audiogroup_default",
@@ -10,9 +10,9 @@
   "compression":0,
   "compressionQuality":4,
   "conversionMode":0,
-  "duration":0.71297052,
+  "duration":0.7129705,
   "exportDir":"",
-  "name":"Snd_Power",
+  "name":"Snd_Heal",
   "parent":{
     "name":"SFX",
     "path":"folders/Sounds/SFX.yy",
@@ -21,6 +21,6 @@
   "resourceType":"GMSound",
   "resourceVersion":"2.0",
   "sampleRate":44100,
-  "soundFile":"Snd_Power.wav",
+  "soundFile":"Snd_Heal.wav",
   "volume":0.88,
 }

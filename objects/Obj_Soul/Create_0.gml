@@ -1,12 +1,12 @@
 if (!variable_global_exists("Gloomy_Player")) {
     global.Gloomy_Player = {
-        LV: 1,
+        LV: 10,
         EXP: 0,
         GOLD: 0,
-        Hp_Max: 20,
-        Hp_Normal: 20,
+        Hp_Max: 50,
+        Hp_Normal: 50,
         Hp_Karma: 0,
-        Hp_Final: 20,
+        Hp_Final: 50,
         Atk_Self: 0,
         Atk_Equip: 0,
         Atk_Final: 0,

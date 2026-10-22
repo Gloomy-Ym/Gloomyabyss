@@ -10,7 +10,7 @@
   "compression":0,
   "compressionQuality":4,
   "conversionMode":0,
-  "duration":0.00249433,
+  "duration":0.002494331,
   "exportDir":"",
   "name":"Snd_NoSound",
   "parent":{
@@ -22,5 +22,5 @@
   "resourceVersion":"2.0",
   "sampleRate":44100,
   "soundFile":"Snd_NoSound.wav",
-  "volume":1,
+  "volume":0.66,
 }
