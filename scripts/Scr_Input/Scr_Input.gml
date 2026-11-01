@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// Copyright (C) 2026 Gloomy, JO-Beacon
+
 function Scr_Input_Init() {
     global.__Scr_Input_Ready = RawInput_Init() > 0;
     if (global.__Scr_Input_Ready) {

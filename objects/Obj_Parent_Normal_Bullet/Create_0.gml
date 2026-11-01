@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// Copyright (C) 2026 Gloomy, JO-Beacon
+
 depth = 1;
 Damage_Karma = 0;
 Move_Speed_Modifier_Penalty = 1;

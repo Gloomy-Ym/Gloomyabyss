@@ -1,0 +1,42 @@
+Gloomytale
+Copyright (C) 2026 Gloomy, JO-Beacon
+Required Notice: Copyright (C) 2026 Gloomy, JO-Beacon
+
+本文件列出 Gloomytale 项目中不属于 Gloomytale 原创的内容。这些内容不受
+LICENSE.md（PolyForm Noncommercial License 1.0.0）约束，按各自的许可条款使用。
+
+## 字体
+
+### assets/fonts/8bitoperator-JVE-Regular/
+
+- 字体：8bitoperator JVE
+- 作者：nipcen（2011）
+- 来源：https://fontstruct.com/fontstructions/show/534034
+- 许可：CC BY-NC-SA 3.0
+- 许可证原文：LICENSE-CC-BY-NC-SA-3.0.txt
+
+### assets/fonts/ark-pixel-font/
+
+- 字体：Ark Pixel Font
+- 作者：TakWolf
+- 来源：https://github.com/TakWolf/ark-pixel-font
+- 许可：SIL Open Font License 1.1
+- 许可证原文：OFL.txt
+
+### assets/fonts/world_of_fonts/
+
+- 字体：World of Fonts
+- 作者：Anna Anthropy
+- 来源：https://w.itch.io/world-of-fonts
+- 授权依据：作者公开声明，见同目录 使用授权记录.txt
+
+## 音频
+
+### sounds/
+
+音效来自 UNDERTALE。UNDERTALE 及相关商标、素材的权利归 Toby Fox 及各权利人所有。
+
+## 引擎
+
+GameMaker（YoYo Games Ltd）。运行时与导出器的权利归 YoYo Games 所有，
+相关声明见 options/windows/installer/license.txt。

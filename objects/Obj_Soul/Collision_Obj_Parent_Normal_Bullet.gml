@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// Copyright (C) 2026 Gloomy, JO-Beacon
+
 //碰到弹幕
 if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0) {
     audio_play_sound(Snd_Hurt, 0, false);

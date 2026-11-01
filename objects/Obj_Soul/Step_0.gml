@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// Copyright (C) 2026 Gloomy, JO-Beacon
+
 //锁等级
 if (LV > 20) {
     LV = 20;

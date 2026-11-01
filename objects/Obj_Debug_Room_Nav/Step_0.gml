@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// Copyright (C) 2026 Gloomy, JO-Beacon
+
 var gui_width = display_get_gui_width();
 var gui_height = display_get_gui_height();
 var nav_scale = gui_width / 640;

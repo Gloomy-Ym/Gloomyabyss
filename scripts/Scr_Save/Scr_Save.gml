@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+// Copyright (C) 2026 Gloomy, JO-Beacon
+
 function Scr_Save_FormatId(_prefix, _number) {
     var number_text = string(_number);
     while (string_length(number_text) < 4) {
