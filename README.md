@@ -1,4 +1,4 @@
-# Gloomytale
+# Gloomyabyss
 
 基于 UNDERTALE 创作的同人游戏，使用 GameMaker 开发。
 
@@ -29,5 +29,5 @@ Required Notice: Copyright (C) 2026 Gloomy, JO-Beacon
 
 ## 声明
 
-Gloomytale 与 Toby Fox 及 UNDERTALE 官方不存在隶属、授权或认可关系。
+Gloomyabyss 与 Toby Fox 及 UNDERTALE 官方不存在隶属、授权或认可关系。
 UNDERTALE 及相关商标、素材的权利归 Toby Fox 及各权利人所有。
