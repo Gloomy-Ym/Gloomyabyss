@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
-// Copyright (C) 2026 Gloomy, JO-Beacon
+// Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
 var previous_alpha = draw_get_alpha();
 var previous_colour = draw_get_color();

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
-// Copyright (C) 2026 Gloomy, JO-Beacon
+// Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
 function Scr_Input_Init() {
     global.__Scr_Input_Ready = RawInput_Init() > 0;

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
-// Copyright (C) 2026 Gloomy, JO-Beacon
+// Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
 if (sprite_index == Spr_Bullet_Soul_Yellow_1) {
 	Frames += 1;

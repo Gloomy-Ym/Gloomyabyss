@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
-// Copyright (C) 2026 Gloomy, JO-Beacon
+// Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
 var overworld_menu_open = variable_global_exists("Gloomy_Overworld_UI_Open") && global.Gloomy_Overworld_UI_Open;
 var move_left = Scr_Input_KeyDown(ord("A")) || Scr_Input_KeyDown(vk_left);

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
-// Copyright (C) 2026 Gloomy, JO-Beacon
+// Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
 var toggle_pressed = Scr_Input_KeyPressed(ord("C")) || Scr_Input_KeyPressed(vk_control);
 var confirm_pressed = Scr_Input_ConfirmPressed();

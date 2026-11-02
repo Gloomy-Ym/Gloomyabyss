@@ -18,8 +18,8 @@
 完整条款见 [LICENSE.md](LICENSE.md)。
 
 ```
-Copyright (C) 2026 Gloomy, JO-Beacon
-Required Notice: Copyright (C) 2026 Gloomy, JO-Beacon
+Copyright (C) 2026 Gloomy-Ym, JO-Beacon
+Required Notice: Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 ```
 
 ## 第三方素材
