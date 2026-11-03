@@ -80,6 +80,7 @@
     {"id":{"name":"Death_Room","path":"rooms/Death_Room/Death_Room.yy",},},
     {"id":{"name":"OverWorld","path":"rooms/OverWorld/OverWorld.yy",},},
     {"id":{"name":"Title_Room","path":"rooms/Title_Room/Title_Room.yy",},},
+    {"id":{"name":"Scr_Buff","path":"scripts/Scr_Buff/Scr_Buff.yy",},},
     {"id":{"name":"Scr_Input","path":"scripts/Scr_Input/Scr_Input.yy",},},
     {"id":{"name":"Scr_Save","path":"scripts/Scr_Save/Scr_Save.yy",},},
     {"id":{"name":"Scr_World","path":"scripts/Scr_World/Scr_World.yy",},},

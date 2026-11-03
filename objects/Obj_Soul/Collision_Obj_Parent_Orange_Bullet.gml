@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
-// Copyright (C) 2026 Gloomy-Ym, JO-Beacon
+// Copyright (C) 2026 Gloomy, JO-Beacon
 
-if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0 && Move_Up = false && Move_Down = false && Move_Left = false && Move_Right = false && Move_Jump = false && Move_Fall = false) {
+if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0 && H = 0 && V = 0 && Move_Jump = false && Move_Fall = false) {
 	    audio_play_sound(Snd_Hurt, 0, false);
     Invincible_Frames = other.Invincible_Frames;
     Move_Speed_Modifier_Penalty = other.Move_Speed_Modifier_Penalty;
