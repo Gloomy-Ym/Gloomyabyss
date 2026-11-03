@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "segments": [
+    { "id": "main", "file": "overworld.map", "origin": [0, 0] }
+  ],
+  "portals": [],
+  "links": [],
+  "start": { "col": 8, "row": 12 }
+}

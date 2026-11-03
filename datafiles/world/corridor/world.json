@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "segments": [
+    {
+      "id": "corridor",
+      "file": "corridor.map",
+      "origin": [
+        0,
+        0
+      ]
+    }
+  ],
+  "portals": [],
+  "links": [],
+  "start": {
+    "col": 2,
+    "row": 6
+  },
+  "seams": [],
+  "portal_planes": [
+    {
+      "axis": "x",
+      "at": 32,
+      "from": 0,
+      "to": 12,
+      "direction": "+",
+      "target": [
+        -32,
+        0
+      ]
+    }
+  ]
+}

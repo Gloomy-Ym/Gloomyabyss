@@ -59,8 +59,13 @@ Temporary Items
 *.old
 *.old.*
 
-# GMRT build directory
+# Build output
 Build
+/cache/
+/output/
+
+# GameMaker prefab dependencies (copy from the IDE's global Prefabs folder)
+/prefabs/
 
 # Raw Input extension build artifacts
 extensions/*/source/obj/

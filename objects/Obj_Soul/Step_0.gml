@@ -42,7 +42,7 @@ else if (Hp_Karma < 0) {
 }
 Hp_Final = Hp_Normal + Hp_Karma;
 var overworld_menu_open = variable_global_exists("Gloomy_Overworld_UI_Open") && global.Gloomy_Overworld_UI_Open;
-var solid_collision_objects = [Obj_Broder_Battle, Obj_Ender_Chest];
+var solid_collision_objects = [Obj_Broder_Battle];
 //红魂
 if (sprite_index == Spr_Soul_Red && Hp_Final > 0) {
     if (!overworld_menu_open) {

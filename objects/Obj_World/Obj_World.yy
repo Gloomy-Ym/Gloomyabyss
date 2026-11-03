@@ -1,9 +1,13 @@
 {
   "$GMObject":"",
-  "%Name":"Obj_Ender_Chest",
-  "eventList":[],
+  "%Name":"Obj_World",
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":2,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":true,
-  "name":"Obj_Ender_Chest",
+  "name":"Obj_World",
   "overriddenProperties":[],
   "parent":{
     "name":"Objects",
@@ -26,11 +30,8 @@
   "properties":[],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
-  "solid":true,
-  "spriteId":{
-    "name":"Spr_Ender_Chest",
-    "path":"sprites/Spr_Ender_Chest/Spr_Ender_Chest.yy",
-  },
+  "solid":false,
+  "spriteId":null,
   "spriteMaskId":null,
   "visible":true,
 }

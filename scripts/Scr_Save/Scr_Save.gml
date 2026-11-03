@@ -9,6 +9,14 @@ function Scr_Save_FormatId(_prefix, _number) {
     return _prefix + "_" + number_text;
 }
 
+function Scr_Save_GetFormatVersion() {
+    return 1;
+}
+
+function Scr_Save_LogError(_message) {
+    show_debug_message("[Gloomy_Save] " + _message);
+}
+
 function Scr_Save_CreateStorySlot(_world_index, _name) {
     if (!variable_global_exists("Gloomy_Save")) {
         return -1;
@@ -204,6 +212,99 @@ function Scr_Save_GetActiveStory() {
     return Scr_Save_GetStory(global.Gloomy_Save.active_world_index, global.Gloomy_Save.active_story_index);
 }
 
+// ---- 第三层：剧情内部读写 ----
+
+function Scr_Save_Story_GetChapter() {
+    var story = Scr_Save_GetActiveStory();
+    return (story == undefined ? undefined : story.chapter);
+}
+
+function Scr_Save_Story_GetRoute() {
+    var story = Scr_Save_GetActiveStory();
+    return (story == undefined ? undefined : story.route);
+}
+
+function Scr_Save_Story_GetFlag(_key, _default = undefined) {
+    var story = Scr_Save_GetActiveStory();
+    if (story == undefined) {
+        return _default;
+    }
+    if (!is_struct(story.flags)) {
+        story.flags = {};
+    }
+    if (!variable_struct_exists(story.flags, _key)) {
+        return _default;
+    }
+    return story.flags[$ _key];
+}
+
+function Scr_Save_Story_HasFlag(_key) {
+    var story = Scr_Save_GetActiveStory();
+    if (story == undefined || !is_struct(story.flags)) {
+        return false;
+    }
+    return variable_struct_exists(story.flags, _key);
+}
+
+function Scr_Save_Story_SetFlag(_key, _value) {
+    var story = Scr_Save_GetActiveStory();
+    if (story == undefined || !is_string(_key) || string_length(_key) <= 0) {
+        return false;
+    }
+    if (!is_struct(story.flags)) {
+        story.flags = {};
+    }
+    story.flags[$ _key] = _value;
+    Scr_Save_MarkDirty();
+    return true;
+}
+
+function Scr_Save_Story_DeleteFlag(_key) {
+    var story = Scr_Save_GetActiveStory();
+    if (story == undefined || !is_struct(story.flags) || !variable_struct_exists(story.flags, _key)) {
+        return false;
+    }
+    variable_struct_remove(story.flags, _key);
+    Scr_Save_MarkDirty();
+    return true;
+}
+
+function Scr_Save_Story_ClearFlags() {
+    var story = Scr_Save_GetActiveStory();
+    if (story == undefined) {
+        return false;
+    }
+    story.flags = {};
+    Scr_Save_MarkDirty();
+    return true;
+}
+
+// 立即把当前剧情槽位写到磁盘，玩家强退也不会丢
+function Scr_Save_Story_Commit() {
+    if (!variable_global_exists("Gloomy_Save")) {
+        return false;
+    }
+    var world_index = global.Gloomy_Save.active_world_index;
+    var story_index = global.Gloomy_Save.active_story_index;
+    if (world_index < 0 || story_index < 0) {
+        return false;
+    }
+    return Scr_Save_WriteStorySlot(world_index, story_index);
+}
+
+function Scr_Save_MarkDirty() {
+    if (variable_global_exists("Gloomy_Save")) {
+        global.Gloomy_Save.dirty = true;
+    }
+}
+
+function Scr_Save_IsDirty() {
+    if (!variable_global_exists("Gloomy_Save") || !variable_struct_exists(global.Gloomy_Save, "dirty")) {
+        return false;
+    }
+    return global.Gloomy_Save.dirty;
+}
+
 function Scr_Save_GetSaveBaseDirectory() {
     return Scr_Save_JoinPath(working_directory, "saves");
 }
@@ -264,13 +365,41 @@ function Scr_Save_EnsureWorldDirectories(_world_id) {
 }
 
 function Scr_Save_WriteJsonFile(_path, _data) {
-    var file_id = file_text_open_write(_path);
+    var temp_path = _path + ".tmp";
+    var file_id = file_text_open_write(temp_path);
     if (file_id == -1) {
+        Scr_Save_LogError("cannot open for write: " + temp_path);
         return false;
     }
 
     file_text_write_string(file_id, json_stringify(_data, true));
     file_text_close(file_id);
+
+    // 写完后先读回来确认能解析，再覆盖正式文件
+    if (Scr_Save_ReadJsonFile(temp_path) == undefined) {
+        Scr_Save_LogError("written file failed verification: " + temp_path);
+        file_delete(temp_path);
+        return false;
+    }
+
+    // 覆盖前保留一份备份
+    if (file_exists(_path)) {
+        var backup_path = _path + ".bak";
+        if (file_exists(backup_path)) {
+            file_delete(backup_path);
+        }
+        file_copy(_path, backup_path);
+        file_delete(_path);
+    }
+
+    file_copy(temp_path, _path);
+    file_delete(temp_path);
+
+    if (!file_exists(_path)) {
+        Scr_Save_LogError("cannot move temp file into place: " + _path);
+        return false;
+    }
+
     return true;
 }
 
@@ -297,48 +426,136 @@ function Scr_Save_ReadJsonFile(_path) {
         return undefined;
     }
 
-    return json_parse(content);
+    try {
+        return json_parse(content);
+    } catch (_error) {
+        Scr_Save_LogError("json parse failed: " + _path + " (" + string(_error) + ")");
+        return undefined;
+    }
+}
+
+function Scr_Save_ReadJsonFileWithBackup(_path) {
+    var data = Scr_Save_ReadJsonFile(_path);
+    if (data != undefined) {
+        return data;
+    }
+
+    var backup_path = _path + ".bak";
+    if (file_exists(backup_path)) {
+        Scr_Save_LogError("falling back to backup: " + backup_path);
+        return Scr_Save_ReadJsonFile(backup_path);
+    }
+
+    return undefined;
 }
 
 function Scr_Save_LoadIndex() {
-    return Scr_Save_ReadJsonFile(Scr_Save_GetIndexPath());
+    var data = Scr_Save_ReadJsonFileWithBackup(Scr_Save_GetIndexPath());
+    if (data == undefined) {
+        return undefined;
+    }
+
+    data = Scr_Save_MigrateIndex(data);
+    if (data == undefined) {
+        return undefined;
+    }
+
+    if (!Scr_Save_ValidateIndex(data)) {
+        Scr_Save_LogError("index validation failed");
+        return undefined;
+    }
+
+    return data;
+}
+
+function Scr_Save_MigrateIndex(_data) {
+    if (!is_struct(_data)) {
+        return undefined;
+    }
+
+    var version = 1;
+    if (variable_struct_exists(_data, "version") && !is_undefined(_data.version)) {
+        version = _data.version;
+    }
+
+    var target_version = Scr_Save_GetFormatVersion();
+    if (version > target_version) {
+        Scr_Save_LogError("index version " + string(version) + " is newer than supported " + string(target_version));
+        return undefined;
+    }
+
+    while (version < target_version) {
+        switch (version) {
+            // 以后加存档格式版本时，在这里补一步迁移：
+            // case 1: _data = Scr_Save_Migrate_1_to_2(_data); break;
+            default:
+                Scr_Save_LogError("no migration path from version " + string(version));
+                return undefined;
+        }
+        version = version + 1;
+    }
+
+    _data.version = target_version;
+    return _data;
+}
+
+function Scr_Save_ValidateIndex(_data) {
+    if (!is_struct(_data)) {
+        return false;
+    }
+    if (!variable_struct_exists(_data, "worlds") || !is_array(_data.worlds)) {
+        return false;
+    }
+    return true;
 }
 
 function Scr_Save_LoadStorySlot(_world_id, _slot_id) {
-    var data = Scr_Save_ReadJsonFile(Scr_Save_GetStorySlotPath(_world_id, _slot_id));
-    if (data == undefined) {
+    var data = Scr_Save_ReadJsonFileWithBackup(Scr_Save_GetStorySlotPath(_world_id, _slot_id));
+    if (data == undefined || !is_struct(data)) {
+        return undefined;
+    }
+
+    if (!variable_struct_exists(data, "id") || is_undefined(data.id)) {
+        Scr_Save_LogError("story slot missing id: " + string(_slot_id));
         return undefined;
     }
 
     return {
         id: data.id,
-        name: data.name,
-        chapter: data.chapter,
-        route: data.route,
-        flags: data.flags
+        name: (variable_struct_exists(data, "name") ? data.name : string(_slot_id)),
+        chapter: (variable_struct_exists(data, "chapter") ? data.chapter : "prologue"),
+        route: (variable_struct_exists(data, "route") ? data.route : "normal"),
+        flags: (variable_struct_exists(data, "flags") && is_struct(data.flags) ? data.flags : {})
     };
 }
 
 function Scr_Save_LoadWorld(_world_id) {
-    var data = Scr_Save_ReadJsonFile(Scr_Save_GetWorldPath(_world_id));
-    if (data == undefined) {
+    var data = Scr_Save_ReadJsonFileWithBackup(Scr_Save_GetWorldPath(_world_id));
+    if (data == undefined || !is_struct(data)) {
+        return undefined;
+    }
+
+    if (!variable_struct_exists(data, "id") || is_undefined(data.id)) {
+        Scr_Save_LogError("world missing id: " + string(_world_id));
         return undefined;
     }
 
     var world = {
         id: data.id,
-        name: data.name,
-        next_story_slot: data.next_story_slot,
+        name: (variable_struct_exists(data, "name") ? data.name : string(data.id)),
+        next_story_slot: (variable_struct_exists(data, "next_story_slot") ? data.next_story_slot : 1),
         story_slots: []
     };
 
-    if (data.story_slot_ids != undefined) {
+    if (variable_struct_exists(data, "story_slot_ids") && is_array(data.story_slot_ids)) {
         var story_slot_count = array_length(data.story_slot_ids);
         for (var story_i = 0; story_i < story_slot_count; story_i++) {
             var story_slot_id = data.story_slot_ids[story_i];
             var story_slot = Scr_Save_LoadStorySlot(_world_id, story_slot_id);
             if (story_slot != undefined) {
                 world.story_slots[array_length(world.story_slots)] = story_slot;
+            } else {
+                Scr_Save_LogError("story slot failed to load: " + string(story_slot_id) + " in " + string(_world_id));
             }
         }
     }
@@ -432,7 +649,7 @@ function Scr_Save_WriteIndex() {
     }
 
     var data = {
-        version: 1,
+        version: Scr_Save_GetFormatVersion(),
         next_world_id: global.Gloomy_Save.next_world_id,
         active_world_index: global.Gloomy_Save.active_world_index,
         active_story_index: global.Gloomy_Save.active_story_index,
@@ -458,6 +675,7 @@ function Scr_Save_SaveAll() {
         }
     }
 
+    global.Gloomy_Save.dirty = false;
     return true;
 }
 
@@ -473,7 +691,8 @@ function Scr_Save_Init() {
             worlds: [],
             active_world_index: -1,
             active_story_index: -1,
-            next_world_id: 1
+            next_world_id: 1,
+            dirty: false
         };
     }
 

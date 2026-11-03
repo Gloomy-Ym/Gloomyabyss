@@ -11,10 +11,10 @@ var right_pressed = Scr_Input_RightPressed();
 
 if (ui_state == 0) {
     var opened_chest = false;
-    if (confirm_pressed && instance_exists(Obj_Player)) {
+    if (confirm_pressed && instance_exists(Obj_Player) && variable_global_exists("Gloomy_World")) {
         var player_id = instance_find(Obj_Player, 0);
-        var chest_id = instance_nearest(player_id.x, player_id.y, Obj_Ender_Chest);
-        if (chest_id != noone && point_distance(player_id.x, player_id.y, chest_id.x + 10, chest_id.y + 10) <= 28) {
+        var chest_prop = Scr_World_FindProp(global.Gloomy_World, player_id.x, player_id.y, 28, "box");
+        if (chest_prop != undefined) {
             audio_play_sound(Snd_Menu_Selection, 0, false);
             ui_state = 1;
             ui_page = 4;
