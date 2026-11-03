@@ -19,7 +19,7 @@ switch (title_state) {
 
     case 1:
         if (title_timer > 0) {
-            title_timer--;
+            title_timer -= Scr_Time_Scale();
         }
         if (confirm_pressed || title_timer <= 0) {
             layer_set_visible("Assets", false);
@@ -38,7 +38,7 @@ switch (title_state) {
 
     case 3:
         if (title_timer > 0) {
-            title_timer--;
+            title_timer -= Scr_Time_Scale();
         }
         if (confirm_pressed || title_timer <= 0) {
             title_state = 4;
@@ -69,6 +69,9 @@ switch (title_state) {
                     title_state = 6;
                     break;
                 case 3:
+                    room_goto(Map_Editor);
+                    break;
+                case 4:
                     game_end();
                     break;
             }

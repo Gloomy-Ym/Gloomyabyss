@@ -346,8 +346,8 @@ function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) 
 
 // ---------- 世界 ----------
 
-function Scr_World_LoadSegments(_name) {
-    var dir = "world/" + _name;
+function Scr_World_LoadSegments(_name, _base = "") {
+    var dir = (_base == "" ? "world/" + _name : _base);
     var manifest = Scr_World_ReadJson(dir + "/world.json");
     if (manifest == undefined) {
         return undefined;
@@ -364,6 +364,7 @@ function Scr_World_LoadSegments(_name) {
 
     var world = {
         name: _name,
+        dir: dir,
         tile_size: terrain.tile_size,
         types: terrain.types,
         code_map: terrain.code_map,
@@ -519,8 +520,8 @@ function Scr_World_FindPortalById(_world, _id) {
     return undefined;
 }
 
-function Scr_World_Load(_name) {
-    return Scr_World_LoadSegments(_name);
+function Scr_World_Load(_name, _base = "") {
+    return Scr_World_LoadSegments(_name, _base);
 }
 
 // ---------- 查询 ----------
@@ -1038,4 +1039,238 @@ function Scr_World_ApplySeams(_world, _x, _y) {
             return;
         }
     }
+}
+
+// ---------- .gmap 单文件容器 ----------
+//
+// 布局（小端）：
+//   4 字节   "GMAP"
+//   2 字节   版本号（1）
+//   2 字节   条目数
+//   每条目：
+//     2 字节  名字长度
+//     n 字节  名字（UTF-8，只接受 ASCII）
+//     4 字节  数据长度
+//     m 字节  数据
+//
+// 不压缩。编辑器与游戏共用这个格式。
+
+function Scr_World_GmapSafeName(_name) {
+    if (string_length(_name) == 0 || string_length(_name) > 200) {
+        return false;
+    }
+    if (string_pos("/", _name) > 0 || string_pos("\\", _name) > 0) {
+        return false;
+    }
+    if (string_pos("..", _name) > 0) {
+        return false;
+    }
+    return true;
+}
+
+/// 把 _dir 下的 world.json 和各段文件打包成一个 buffer。
+/// 失败返回 -1。
+function Scr_World_BuildGmap(_dir) {
+    var manifest = Scr_World_ReadJson(_dir + "/world.json");
+    if (manifest == undefined) {
+        Scr_World_Log("gmap export: world.json missing in " + _dir);
+        return -1;
+    }
+
+    var names = ["world.json"];
+    if (variable_struct_exists(manifest, "segments")) {
+        for (var i = 0; i < array_length(manifest.segments); i++) {
+            var seg = manifest.segments[i];
+            if (variable_struct_exists(seg, "file")) {
+                array_push(names, seg.file);
+            }
+        }
+    }
+
+    var out = buffer_create(1024, buffer_grow, 1);
+    buffer_write(out, buffer_u8, 0x47);
+    buffer_write(out, buffer_u8, 0x4D);
+    buffer_write(out, buffer_u8, 0x41);
+    buffer_write(out, buffer_u8, 0x50);
+    buffer_write(out, buffer_u16, 1);
+    buffer_write(out, buffer_u16, array_length(names));
+
+    for (var i = 0; i < array_length(names); i++) {
+        var name = names[i];
+        if (!Scr_World_GmapSafeName(name)) {
+            Scr_World_Log("gmap export: unsafe name " + string(name));
+            buffer_delete(out);
+            return -1;
+        }
+
+        var path = _dir + "/" + name;
+        if (!file_exists(path)) {
+            Scr_World_Log("gmap export: missing " + path);
+            buffer_delete(out);
+            return -1;
+        }
+
+        var data = buffer_load(path);
+        if (data < 0) {
+            Scr_World_Log("gmap export: cannot read " + path);
+            buffer_delete(out);
+            return -1;
+        }
+
+        var size = buffer_get_size(data);
+        buffer_write(out, buffer_u16, string_byte_length(name));
+        buffer_write(out, buffer_text, name);
+        buffer_write(out, buffer_u32, size);
+        buffer_copy(data, 0, size, out, buffer_tell(out));
+        buffer_seek(out, buffer_seek_relative, size);
+        buffer_delete(data);
+    }
+
+    buffer_seek(out, buffer_seek_start, 0);
+    return out;
+}
+
+function Scr_World_ExportGmap(_dir, _path) {
+    var buf = Scr_World_BuildGmap(_dir);
+    if (buf < 0) {
+        return false;
+    }
+    buffer_save(buf, _path);
+    buffer_delete(buf);
+    return true;
+}
+
+/// 弹保存对话框，把 _dir 导出成 .gmap。成功返回 true。
+function Scr_World_ExportGmapDialog(_dir) {
+    var suggested = filename_name(_dir);
+    var path = get_save_filename("Gloomyabyss 世界|*.gmap", suggested + ".gmap");
+    if (path == "") {
+        return false;
+    }
+    return Scr_World_ExportGmap(_dir, path);
+}
+
+/// 把 .gmap 解到 _target_dir。成功返回 true。
+function Scr_World_ReadGmap(_path, _target_dir) {
+    var buf = buffer_load(_path);
+    if (buf < 0) {
+        Scr_World_Log("gmap import: cannot read " + _path);
+        return false;
+    }
+
+    if (buffer_get_size(buf) < 8) {
+        buffer_delete(buf);
+        return false;
+    }
+
+    var m0 = buffer_read(buf, buffer_u8);
+    var m1 = buffer_read(buf, buffer_u8);
+    var m2 = buffer_read(buf, buffer_u8);
+    var m3 = buffer_read(buf, buffer_u8);
+    var version = buffer_read(buf, buffer_u16);
+    var count = buffer_read(buf, buffer_u16);
+
+    if (m0 != 0x47 || m1 != 0x4D || m2 != 0x41 || m3 != 0x50 || version != 1) {
+        Scr_World_Log("gmap import: bad header");
+        buffer_delete(buf);
+        return false;
+    }
+
+    if (!directory_exists(_target_dir)) {
+        if (!directory_create(_target_dir)) {
+            Scr_World_Log("gmap import: cannot create " + _target_dir);
+            buffer_delete(buf);
+            return false;
+        }
+    }
+
+    for (var i = 0; i < count; i++) {
+        if (buffer_tell(buf) + 2 > buffer_get_size(buf)) {
+            buffer_delete(buf);
+            return false;
+        }
+        var name_len = buffer_read(buf, buffer_u16);
+        var name = "";
+        for (var c = 0; c < name_len; c++) {
+            name += chr(buffer_read(buf, buffer_u8));
+        }
+
+        if (buffer_tell(buf) + 4 > buffer_get_size(buf)) {
+            buffer_delete(buf);
+            return false;
+        }
+        var size = buffer_read(buf, buffer_u32);
+
+        if (!Scr_World_GmapSafeName(name)) {
+            Scr_World_Log("gmap import: unsafe name " + string(name));
+            buffer_delete(buf);
+            return false;
+        }
+        if (buffer_tell(buf) + size > buffer_get_size(buf)) {
+            Scr_World_Log("gmap import: truncated entry " + name);
+            buffer_delete(buf);
+            return false;
+        }
+
+        var data = buffer_create(size, buffer_fixed, 1);
+        buffer_copy(buf, buffer_tell(buf), size, data, 0);
+        buffer_seek(buf, buffer_seek_relative, size);
+        buffer_save(data, _target_dir + "/" + name);
+        buffer_delete(data);
+    }
+
+    buffer_delete(buf);
+    return true;
+}
+
+/// 弹打开对话框，把 .gmap 解到存档目录下的 world/<名字>/。
+/// 成功返回 { name, dir }，取消或失败返回 undefined。
+function Scr_World_ImportGmapDialog() {
+    var path = get_open_filename("Gloomyabyss 世界|*.gmap", "");
+    if (path == "") {
+        return undefined;
+    }
+
+    var base = filename_name(path);
+    var dot = string_last_pos(".", base);
+    var raw = (dot > 1 ? string_copy(base, 1, dot - 1) : base);
+
+    // 只留字母、数字、下划线、短横线
+    var safe = "";
+    for (var i = 1; i <= string_length(raw); i++) {
+        var c = string_char_at(raw, i);
+        var ok = (c >= "a" && c <= "z")
+            || (c >= "A" && c <= "Z")
+            || (c >= "0" && c <= "9")
+            || c == "_" || c == "-";
+        if (ok) {
+            safe += c;
+        }
+    }
+    if (safe == "") {
+        safe = "imported";
+    }
+
+    var root = game_save_id;
+    if (string_char_at(root, string_length(root)) != "/"
+        && string_char_at(root, string_length(root)) != "\\") {
+        root += "/";
+    }
+    root += "world/";
+    if (!directory_exists(root)) {
+        directory_create(root);
+    }
+
+    var dir = root + safe;
+    var n = 2;
+    while (directory_exists(dir)) {
+        dir = root + safe + "_" + string(n);
+        n += 1;
+    }
+
+    if (!Scr_World_ReadGmap(path, dir)) {
+        return undefined;
+    }
+
+    return { name: filename_name(dir), dir: dir };
 }

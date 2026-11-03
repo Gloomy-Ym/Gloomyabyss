@@ -34,7 +34,7 @@ else if (horizontal > 0) {
 
 var is_moving = horizontal != 0 || vertical != 0;
 if (is_moving) {
-    player_frame_timer += 1;
+    player_frame_timer += Scr_Time_Scale();
     if (player_frame_timer >= 6) {
         player_frame_timer = 0;
         player_frame = (player_frame + 1) mod 4;
@@ -58,7 +58,7 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     var terrain_speed = (terrain != undefined ? terrain.speed : 1);
 
     if (terrain != undefined && terrain.damage > 0 && variable_global_exists("Gloomy_Player")) {
-        terrain_damage_accum += terrain.damage / 30;
+        terrain_damage_accum += terrain.damage * Scr_Time_Dt();
         while (terrain_damage_accum >= 1) {
             terrain_damage_accum -= 1;
             global.Gloomy_Player.Hp_Final = max(0, global.Gloomy_Player.Hp_Final - 1);
@@ -78,8 +78,8 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
         y + top_offset,
         box_width,
         box_height,
-        horizontal * player_move_speed * terrain_speed,
-        vertical * player_move_speed * terrain_speed
+        horizontal * player_move_speed * terrain_speed * Scr_Time_Scale(),
+        vertical * player_move_speed * terrain_speed * Scr_Time_Scale()
     );
     x = moved.left - left_offset;
     y = moved.top - top_offset;
@@ -89,7 +89,7 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
 
     // 传送门
     if (portal_cooldown > 0) {
-        portal_cooldown -= 1;
+        portal_cooldown -= Scr_Time_Scale();
     }
     var portal = Scr_World_PortalAt(world, Scr_World_WorldToCol(world, x), Scr_World_WorldToRow(world, y));
     if (portal != undefined && portal_cooldown <= 0) {
@@ -99,7 +99,7 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     }
 }
 else {
-    move_and_collide(horizontal * player_move_speed, 0, player_colliders);
-    move_and_collide(0, vertical * player_move_speed, player_colliders);
+    move_and_collide(horizontal * player_move_speed * Scr_Time_Scale(), 0, player_colliders);
+    move_and_collide(0, vertical * player_move_speed * Scr_Time_Scale(), player_colliders);
 }
 depth = -y;
