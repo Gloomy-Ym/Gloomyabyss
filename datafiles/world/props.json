@@ -4,7 +4,7 @@
     {
       "id": "box",
       "name": "BOX",
-      "sprite": "Spr_Box_Normal",
+      "sprite": "Spr_Box",
       "block": true,
       "width": 1,
       "height": 1,

@@ -7,6 +7,10 @@
 1. 用 GameMaker 打开 `Gloomytale.yyp`
 2. 选择 Windows 目标平台后运行
 
+## 地图编辑器
+
+世界数据可以用配套编辑器修改：[Gloomyabyss Map Editor](https://github.com/JO-Beacon/Gloomyabyss-MapEditor)。
+
 ## 许可证
 
 本项目采用 **PolyForm Noncommercial License 1.0.0**。

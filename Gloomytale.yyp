@@ -143,7 +143,7 @@
     {"id":{"name":"Snd_WngDng5","path":"sounds/Snd_WngDng5/Snd_WngDng5.yy",},},
     {"id":{"name":"Snd_WngDng6","path":"sounds/Snd_WngDng6/Snd_WngDng6.yy",},},
     {"id":{"name":"Snd_WngDng7","path":"sounds/Snd_WngDng7/Snd_WngDng7.yy",},},
-    {"id":{"name":"Spr_Box_Normal","path":"sprites/Spr_Box_Normal/Spr_Box_Normal.yy",},},
+    {"id":{"name":"Spr_Box","path":"sprites/Spr_Box/Spr_Box.yy",},},
     {"id":{"name":"Spr_Bullet_Soul_Yellow_1","path":"sprites/Spr_Bullet_Soul_Yellow_1/Spr_Bullet_Soul_Yellow_1.yy",},},
     {"id":{"name":"Spr_Bullet_Soul_Yellow_2","path":"sprites/Spr_Bullet_Soul_Yellow_2/Spr_Bullet_Soul_Yellow_2.yy",},},
     {"id":{"name":"Spr_Bullet_Soul_Yellow_3","path":"sprites/Spr_Bullet_Soul_Yellow_3/Spr_Bullet_Soul_Yellow_3.yy",},},
