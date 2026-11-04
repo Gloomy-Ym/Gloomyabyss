@@ -1,7 +1,6 @@
 ; 初始大世界（32x24 格 = 640x480）
 ; 指令写在行首，以 ; 开头。字符含义见 terrain.json 的 code。
 ; name=overworld
-; player=8,12
 ; spawn=Obj_Froggit,20,6
 ; prop=box,24,18
 ; solid=26,4, 30,4, 30,8

@@ -145,17 +145,6 @@ function Scr_World_LoadPropTypes(_path) {
 
 // ---------- 指令解析 ----------
 
-function Scr_World_ParsePair(_text) {
-    var comma = string_pos(",", _text);
-    if (comma <= 0) {
-        return undefined;
-    }
-    return {
-        col: real(string_trim(string_copy(_text, 1, comma - 1))),
-        row: real(string_trim(string_copy(_text, comma + 1, string_length(_text) - comma)))
-    };
-}
-
 function Scr_World_ParseSpawn(_text) {
     var parts = string_split(_text, ",");
     var count = array_length(parts);
@@ -236,7 +225,6 @@ function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) 
         solids: [],
         spawns: [],
         portals: [],
-        start: undefined,
         blocked_cells: {}
     };
 
@@ -283,9 +271,6 @@ function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) 
                     case "portal":
                         var po = Scr_World_ParsePortal(value);
                         if (po != undefined) array_push(seg.portals, po);
-                        break;
-                    case "player":
-                        seg.start = Scr_World_ParsePair(value);
                         break;
                 }
             }
