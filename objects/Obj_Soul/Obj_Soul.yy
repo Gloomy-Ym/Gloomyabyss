@@ -16,7 +16,10 @@
     "name":"Soul",
     "path":"folders/Objects/Soul.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"Obj_Parent_NPC",
+    "path":"objects/Obj_Parent_NPC/Obj_Parent_NPC.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

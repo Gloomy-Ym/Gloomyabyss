@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
+event_inherited();
 if (!variable_global_exists("Gloomy_Player")) {
     global.Gloomy_Player = {
         LV: 10,

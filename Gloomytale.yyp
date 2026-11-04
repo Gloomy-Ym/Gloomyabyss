@@ -67,6 +67,7 @@
     {"id":{"name":"Obj_Parent_Cyan_Bullet","path":"objects/Obj_Parent_Cyan_Bullet/Obj_Parent_Cyan_Bullet.yy",},},
     {"id":{"name":"Obj_Parent_Green_Bullet","path":"objects/Obj_Parent_Green_Bullet/Obj_Parent_Green_Bullet.yy",},},
     {"id":{"name":"Obj_Parent_Normal_Bullet","path":"objects/Obj_Parent_Normal_Bullet/Obj_Parent_Normal_Bullet.yy",},},
+    {"id":{"name":"Obj_Parent_NPC","path":"objects/Obj_Parent_NPC/Obj_Parent_NPC.yy",},},
     {"id":{"name":"Obj_Parent_Orange_Bullet","path":"objects/Obj_Parent_Orange_Bullet/Obj_Parent_Orange_Bullet.yy",},},
     {"id":{"name":"Obj_Player","path":"objects/Obj_Player/Obj_Player.yy",},},
     {"id":{"name":"Obj_Shield_Soul_Green","path":"objects/Obj_Shield_Soul_Green/Obj_Shield_Soul_Green.yy",},},
