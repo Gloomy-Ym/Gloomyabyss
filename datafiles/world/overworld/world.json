@@ -1,7 +1,7 @@
 {
   "version": 1,
   "segments": [
-    { "id": "main", "file": "overworld.map", "origin": [0, 0] }
+    { "id": "main", "file": "overworld.seg", "origin": [0, 0] }
   ],
   "portals": [],
   "links": [],

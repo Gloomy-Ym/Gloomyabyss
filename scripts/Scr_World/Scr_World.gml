@@ -7,7 +7,7 @@
 //   id / rows / origin(列,行) / repeat(x|y) / repeat_count(0=无限)
 //   段内还可以有 prop / solid / spawn / portal 指令
 //
-// 兼容旧的单文件地图：没有 world.json 时，把整张 .map 当成 origin=(0,0) 的一段。
+// 兼容旧的单文件地图：没有 world.json 时，把整张 .seg 当成 origin=(0,0) 的一段。
 
 function Scr_World_Log(_message) {
     show_debug_message("[Gloomy_World] " + _message);

@@ -84,6 +84,38 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     x = moved.left - left_offset;
     y = moved.top - top_offset;
 
+    // 平面传送门：跨过时把玩家折回目标坐标。
+    // 平面两侧内容一致，折回后视觉无缝；道具和对象留在原坐标，不会消失。
+    if (variable_struct_exists(world, "portal_planes")) {
+        var pcol = Scr_World_WorldToCol(world, x);
+        var prow = Scr_World_WorldToRow(world, y);
+        for (var plane_i = 0; plane_i < array_length(world.portal_planes); plane_i++) {
+            var plane = world.portal_planes[plane_i];
+            var crossed = false;
+            if (plane.axis == "x") {
+                if (prow >= plane.from && prow < plane.to) {
+                    if (plane.direction == "+" && pcol >= plane.at) crossed = true;
+                    if (plane.direction == "-" && pcol < plane.at) crossed = true;
+                }
+            }
+            else if (plane.axis == "y") {
+                if (pcol >= plane.from && pcol < plane.to) {
+                    if (plane.direction == "+" && prow >= plane.at) crossed = true;
+                    if (plane.direction == "-" && prow < plane.at) crossed = true;
+                }
+            }
+            if (crossed) {
+                x += plane.dx * world.tile_size;
+                y += plane.dy * world.tile_size;
+                // 折回后把碰撞盒推回段内：周期边界在 x=0 时，
+                // 盒左会落到 -1 列，碰撞查询会把那里当成墙。
+                x = max(x, -left_offset + 1);
+                y = max(y, -top_offset + 1);
+                break;
+            }
+        }
+    }
+
     // 接缝：只挪世界原点，不挪玩家
     Scr_World_ApplySeams(world, x, y);
 

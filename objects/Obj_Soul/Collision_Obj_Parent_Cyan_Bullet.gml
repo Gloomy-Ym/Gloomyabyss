@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
-if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0 && (H != 0 || V != 0 || Move_Jump = true || Move_Fall = true)) { 
+if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0 && (H != 0 || V != 0 || Move_Jump = true || Move_Fall = true)) {
+    if (other.Invincible_Frames <= 0) {
+        if (Frame_Damage_Cooldown > 0) exit;
+        Frame_Damage_Cooldown = 1;
+    }
+ 
     audio_play_sound(Snd_Hurt, 0, false);
     Invincible_Frames = other.Invincible_Frames;
     Move_Speed_Modifier_Penalty = other.Move_Speed_Modifier_Penalty;

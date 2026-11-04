@@ -3,7 +3,7 @@
   "segments": [
     {
       "id": "corridor",
-      "file": "corridor.map",
+      "file": "corridor.seg",
       "origin": [
         0,
         0

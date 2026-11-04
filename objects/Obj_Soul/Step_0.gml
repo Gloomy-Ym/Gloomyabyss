@@ -186,6 +186,10 @@ if (Scr_Input_KeyDown(ord("X")) || Scr_Input_KeyDown(vk_shift)) {
 else {
     Move_Speed_Final = Move_Speed * Move_Speed_Modifier_Penalty;
 }
+if (Frame_Damage_Cooldown > 0) {
+    Frame_Damage_Cooldown -= Scr_Time_Scale();
+}
+
 if (Move_Speed_Modifier_Penalty_Timer > 0) {
     Move_Speed_Modifier_Penalty_Timer -= Scr_Time_Scale();
 }

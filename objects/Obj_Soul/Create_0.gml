@@ -60,6 +60,8 @@ H = 0;
 V = 0;
 //无敌帧
 Invincible_Frames = 0;
+// 帧伤冷却：按 30 逻辑帧锁定，60 帧时每两帧最多扣一次
+Frame_Damage_Cooldown = 0;
 Invincible_Frames_Falsh_Timer = 0;
 //Mode_Invincible
 Mode_Invincible = false;
