@@ -226,8 +226,9 @@ function Scr_World_ParsePad(_text) {
 function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) {
     var seg = {
         id: _spec.id,
-        origin_col: (variable_struct_exists(_spec, "origin") ? _spec.origin[0] : 0),
-        origin_row: (variable_struct_exists(_spec, "origin") ? _spec.origin[1] : 0),
+        origin_col: _spec.origin[0],
+        origin_row: _spec.origin[1],
+        origin_z: _spec.origin[2],
         repeat_x: false,
         repeat_y: false,
         repeat_count: (variable_struct_exists(_spec, "repeat_count") ? _spec.repeat_count : 0),
@@ -586,6 +587,7 @@ function Scr_World_SegmentAt(_world, _col, _row) {
     var count = array_length(_world.segments);
     for (var i = 0; i < count; i++) {
         var seg = _world.segments[i];
+        if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) continue;
         var local_col = 0;
         var local_row = 0;
 
@@ -724,6 +726,7 @@ function Scr_World_RectBlocked(_world, _left, _top, _right, _bottom) {
     var height = _bottom - _top;
     for (var i = 0; i < array_length(_world.segments); i++) {
         var seg = _world.segments[i];
+        if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) continue;
         for (var s = 0; s < array_length(seg.solids); s++) {
             if (Scr_World_RectHitsSolid(_left, _top, width, height, seg.solids[s])) return true;
         }
@@ -809,6 +812,7 @@ function Scr_World_FindSolidHit(_world, _left, _top, _width, _height) {
     var best = undefined;
     for (var i = 0; i < array_length(_world.segments); i++) {
         var seg = _world.segments[i];
+        if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) continue;
         for (var s = 0; s < array_length(seg.solids); s++) {
             var hit = Scr_World_RectSolidMTV(_left, _top, _width, _height, seg.solids[s]);
             if (hit != undefined && (best == undefined || hit.overlap < best.overlap)) best = hit;
@@ -937,6 +941,7 @@ function Scr_World_DrawProps(_world, _cam_x, _cam_y, _cam_w, _cam_h) {
 
     for (var i = 0; i < array_length(_world.segments); i++) {
         var seg = _world.segments[i];
+        if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) continue;
         for (var p = 0; p < array_length(seg.props); p++) {
             var prop = seg.props[p];
             var sprite = prop.def.sprite_index;
@@ -961,6 +966,7 @@ function Scr_World_DrawSolids(_world) {
     draw_set_colour(c_red);
     for (var i = 0; i < array_length(_world.segments); i++) {
         var seg = _world.segments[i];
+        if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) continue;
         for (var s = 0; s < array_length(seg.solids); s++) {
             var points = seg.solids[s].points;
             var count = array_length(points);
@@ -1001,6 +1007,7 @@ function Scr_World_SpawnObjects(_world, _layer) {
 
     for (var i = 0; i < array_length(_world.segments); i++) {
         var seg = _world.segments[i];
+        if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) continue;
         for (var s = 0; s < array_length(seg.spawns); s++) {
             var entry = seg.spawns[s];
             if (variable_struct_exists(entry, "object")) {
@@ -1032,6 +1039,7 @@ function Scr_World_FindProp(_world, _x, _y, _radius, _interaction) {
 
     for (var i = 0; i < array_length(_world.segments); i++) {
         var seg = _world.segments[i];
+        if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) continue;
         for (var p = 0; p < array_length(seg.props); p++) {
             var prop = seg.props[p];
             if (_interaction != "" && prop.def.interaction != _interaction) continue;

@@ -37,6 +37,7 @@
     {"link":"io.gamemaker.sdfshaders-1.0.0","name":"io.gamemaker.sdfshaders-1.0.0","path":"io.gamemaker.sdfshaders-1.0.0.yyp",},
   ],
   "IncludedFiles":[
+    {"$GMIncludedFile":"","%Name":"3232.seg","CopyToMask":-1,"filePath":"datafiles/world/corridor","name":"3232.seg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"corridor.seg","CopyToMask":-1,"filePath":"datafiles/world/corridor","name":"corridor.seg","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"world.json","CopyToMask":-1,"filePath":"datafiles/world/corridor","name":"world.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"objects.json","CopyToMask":-1,"filePath":"datafiles/world","name":"objects.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
@@ -88,6 +89,7 @@
     {"id":{"name":"Scr_Input","path":"scripts/Scr_Input/Scr_Input.yy",},},
     {"id":{"name":"Scr_Save","path":"scripts/Scr_Save/Scr_Save.yy",},},
     {"id":{"name":"Scr_Time","path":"scripts/Scr_Time/Scr_Time.yy",},},
+    {"id":{"name":"Scr_Player","path":"scripts/Scr_Player/Scr_Player.yy",},},
     {"id":{"name":"Scr_World","path":"scripts/Scr_World/Scr_World.yy",},},
     {"id":{"name":"Snd_Block_Bullet","path":"sounds/Snd_Block_Bullet/Snd_Block_Bullet.yy",},},
     {"id":{"name":"Snd_BuyItem","path":"sounds/Snd_BuyItem/Snd_BuyItem.yy",},},

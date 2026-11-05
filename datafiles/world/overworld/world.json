@@ -1,9 +1,20 @@
 {
   "version": 1,
   "segments": [
-    { "id": "main", "file": "overworld.seg", "origin": [0, 0] }
+    {
+      "id": "main",
+      "file": "overworld.seg",
+      "origin": [
+        0,
+        0,
+        0
+      ]
+    }
   ],
   "pads": [],
   "pad_links": [],
-  "start": { "col": 8, "row": 12 }
+  "start": {
+    "col": 8,
+    "row": 12
+  }
 }

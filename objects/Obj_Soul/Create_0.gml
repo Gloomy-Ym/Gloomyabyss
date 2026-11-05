@@ -2,24 +2,7 @@
 // Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
 event_inherited();
-if (!variable_global_exists("Gloomy_Player")) {
-    global.Gloomy_Player = {
-        LV: 10,
-        EXP: 0,
-        GOLD: 0,
-        Hp_Max: 50,
-        Hp_Normal: 50,
-        Hp_Karma: 0,
-        Hp_Final: 50,
-        Atk_Self: 0,
-        Atk_Equip: 0,
-        Atk_Final: 0,
-        Def_Self: 0,
-        Def_Equip: 0,
-        Def_Final: 0,
-        Exp_Next: 20
-    };
-}
+Scr_Player_Init();
 
 global.Gloomy_Death_Triggered = false;
 

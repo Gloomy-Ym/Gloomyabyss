@@ -6,6 +6,16 @@
       "file": "corridor.seg",
       "origin": [
         0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "3232",
+      "file": "3232.seg",
+      "origin": [
+        0,
+        12,
         0
       ]
     }
@@ -26,7 +36,7 @@
       "direction": "+",
       "target": [
         -32,
-        0
+        12
       ]
     }
   ]

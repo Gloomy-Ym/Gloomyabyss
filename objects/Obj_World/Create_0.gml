@@ -14,6 +14,10 @@ if (world == undefined) {
 
 global.Gloomy_World = world;
 
+if (!variable_global_exists("Gloomy_Level")) {
+    global.Gloomy_Level = 0;
+}
+
 if (world.start != undefined) {
     with (Obj_Player) {
         x = other.world.start.col * other.world.tile_size + other.world.tile_size * 0.5;
