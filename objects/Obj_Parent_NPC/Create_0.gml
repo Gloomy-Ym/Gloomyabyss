@@ -1,7 +1,7 @@
 Hp_Normal =71;
 Hp_Karma = 0;
 Hp_Final = 71;
-HP_Max = 71;
+Hp_Max = 71;
 Atk_Self = 71;
 Def_Self = 0;
 Buff = [

@@ -1,11 +1,11 @@
 Hp_Final = Hp_Normal + Hp_Karma;
 for (var i = 0; i < array_length(Buff); i++) {
-    if (Buff[i].Name == "Weak" && Hp_Final <= HP_Max / 2) {
+    if (Buff[i].Name == "Weak" && Hp_Final <= Hp_Max / 2) {
     	Buff[i].state = true;
         Buff[i].Timer = 1;
         show_debug_message("虚弱");
     }
-    if (Buff[i].Name == "Weak" && Hp_Final > HP_Max / 2) {
+    if (Buff[i].Name == "Weak" && Hp_Final > Hp_Max / 2) {
     	Buff[i].state = false;
         Buff[i].Timer = 0;
     }
