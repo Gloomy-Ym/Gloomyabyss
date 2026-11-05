@@ -4,10 +4,10 @@
 event_inherited();
 if (!variable_global_exists("Gloomy_Player")) {
     global.Gloomy_Player = {
-        LV: 10,
+        LV: 1,
         EXP: 0,
         GOLD: 0,
-        Hp_Max: 50,
+        Hp_Max: 20,
         Hp_Normal: 50,
         Hp_Karma: 0,
         Hp_Final: 50,
