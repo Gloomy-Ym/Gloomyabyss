@@ -5,7 +5,7 @@
 //
 // 世界 = segments[]，每段：
 //   id / rows / origin(列,行) / repeat(x|y) / repeat_count(0=无限)
-//   段内还可以有 prop / solid / spawn / portal 指令
+//   段内还可以有 prop / solid / spawn / pad 指令
 //
 // 兼容旧的单文件地图：没有 world.json 时，把整张 .seg 当成 origin=(0,0) 的一段。
 
@@ -191,13 +191,26 @@ function Scr_World_ParseSolid(_text, _tile_size) {
             y: real(string_trim(parts[i + 1])) * _tile_size
         });
     }
+
+    // 零面积（三点共线）的多边形是零宽墙，会让玩家卡死，直接丢掉。
+    var area2 = 0;
+    var n = count div 2;
+    for (var k = 0; k < n; k++) {
+        var p1 = points[k];
+        var p2 = points[(k + 1) mod n];
+        area2 += p1.x * p2.y - p2.x * p1.y;
+    }
+    if (abs(area2) < 0.001) {
+        Scr_World_Log("degenerate solid skipped: " + _text);
+        return undefined;
+    }
     return { points: points };
 }
 
-function Scr_World_ParsePortal(_text) {
+function Scr_World_ParsePad(_text) {
     var parts = string_split(_text, ",");
     if (array_length(parts) != 4) {
-        Scr_World_Log("bad portal directive: " + _text);
+        Scr_World_Log("bad pad directive: " + _text);
         return undefined;
     }
     return {
@@ -224,7 +237,7 @@ function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) 
         props: [],
         solids: [],
         spawns: [],
-        portals: [],
+        pads: [],
         blocked_cells: {}
     };
 
@@ -268,9 +281,9 @@ function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) 
                         var so = Scr_World_ParseSolid(value, _tile_size);
                         if (so != undefined) array_push(seg.solids, so);
                         break;
-                    case "portal":
-                        var po = Scr_World_ParsePortal(value);
-                        if (po != undefined) array_push(seg.portals, po);
+                    case "pad":
+                        var po = Scr_World_ParsePad(value);
+                        if (po != undefined) array_push(seg.pads, po);
                         break;
                 }
             }
@@ -355,7 +368,7 @@ function Scr_World_LoadSegments(_name, _base = "") {
         code_map: terrain.code_map,
         segments: [],
         by_id: {},
-        portals: [],
+        pads: [],
         portal_planes: [],
         seams: [],
         start: manifest.start
@@ -370,16 +383,16 @@ function Scr_World_LoadSegments(_name, _base = "") {
         world.by_id[$ seg.id] = seg;
     }
 
-    // 传送门：段内坐标 -> 世界坐标
-    if (variable_struct_exists(manifest, "portals")) {
-        for (var i = 0; i < array_length(manifest.portals); i++) {
-            var p = manifest.portals[i];
+    // 传送格：段内坐标 -> 世界坐标
+    if (variable_struct_exists(manifest, "pads")) {
+        for (var i = 0; i < array_length(manifest.pads); i++) {
+            var p = manifest.pads[i];
             var seg = world.by_id[$ p.segment];
             if (seg == undefined) {
-                Scr_World_Log("portal references unknown segment: " + string(p.segment));
+                Scr_World_Log("pad references unknown segment: " + string(p.segment));
                 return undefined;
             }
-            array_push(world.portals, {
+            array_push(world.pads, {
                 id: p.id,
                 col: seg.origin_col + p.col,
                 row: seg.origin_row + p.row,
@@ -390,20 +403,20 @@ function Scr_World_LoadSegments(_name, _base = "") {
     }
 
     // 连线：把 from 的 target 指向 to 的世界坐标
-    if (variable_struct_exists(manifest, "links")) {
-        for (var i = 0; i < array_length(manifest.links); i++) {
-            var link = manifest.links[i];
-            var from_portal = Scr_World_FindPortalById(world, link.from);
-            var to_portal = Scr_World_FindPortalById(world, link.to);
-            if (from_portal == undefined || to_portal == undefined) {
-                Scr_World_Log("link references unknown portal");
+    if (variable_struct_exists(manifest, "pad_links")) {
+        for (var i = 0; i < array_length(manifest.pad_links); i++) {
+            var link = manifest.pad_links[i];
+            var from_pad = Scr_World_FindPadById(world, link.from);
+            var to_pad = Scr_World_FindPadById(world, link.to);
+            if (from_pad == undefined || to_pad == undefined) {
+                Scr_World_Log("link references unknown pad");
                 return undefined;
             }
-            from_portal.target_col = to_portal.col;
-            from_portal.target_row = to_portal.row;
+            from_pad.target_col = to_pad.col;
+            from_pad.target_row = to_pad.row;
             if (variable_struct_exists(link, "bidirectional") && link.bidirectional) {
-                to_portal.target_col = from_portal.col;
-                to_portal.target_row = from_portal.row;
+                to_pad.target_col = from_pad.col;
+                to_pad.target_row = from_pad.row;
             }
         }
     }
@@ -436,14 +449,14 @@ function Scr_World_LoadSegments(_name, _base = "") {
         }
     }
 
-    // 每段自己的 portal 指令（段内坐标 -> 世界坐标）
+    // 每段自己的 pad 指令（段内坐标 -> 世界坐标）
     for (var i = 0; i < array_length(world.segments); i++) {
         var seg = world.segments[i];
-        for (var p = 0; p < array_length(seg.portals); p++) {
-            var po = seg.portals[p];
+        for (var p = 0; p < array_length(seg.pads); p++) {
+            var po = seg.pads[p];
             if (po.target_col != undefined) {
-                array_push(world.portals, {
-                    id: "seg_" + seg.id + "_" + string(p),
+                array_push(world.pads, {
+                    id: "pad_" + seg.id + "_" + string(p),
                     col: seg.origin_col + po.col,
                     row: seg.origin_row + po.row,
                     target_col: seg.origin_col + po.target_col,
@@ -496,10 +509,10 @@ function Scr_World_LoadSegments(_name, _base = "") {
     return world;
 }
 
-function Scr_World_FindPortalById(_world, _id) {
-    for (var i = 0; i < array_length(_world.portals); i++) {
-        if (_world.portals[i].id == _id) {
-            return _world.portals[i];
+function Scr_World_FindPadById(_world, _id) {
+    for (var i = 0; i < array_length(_world.pads); i++) {
+        if (_world.pads[i].id == _id) {
+            return _world.pads[i];
         }
     }
     return undefined;
@@ -511,7 +524,7 @@ function Scr_World_Load(_name, _base = "") {
 
 // ---------- 查询 ----------
 
-// 传送门：把坐标解析到真正的数据坐标
+// 传送格：把坐标解析到真正的数据坐标
 function Scr_World_Resolve(_world, _col, _row) {
     if (_world.portal_planes == undefined) {
         return { col: _col, row: _row };
@@ -656,13 +669,23 @@ function Scr_World_ProjectOverlap(_cx, _cy, _hw, _hh, _points, _ax, _ay) {
         if (min_p == undefined || dist < min_p) min_p = dist;
         if (max_p == undefined || dist > max_p) max_p = dist;
     }
-    return !(rect_center + rect_radius < min_p || rect_center - rect_radius > max_p);
+    // 严格重叠才算碰撞：刚好贴住（overlap == 0）不算，否则沿面滑动会被判死。
+    return !(rect_center + rect_radius <= min_p || rect_center - rect_radius >= max_p);
 }
 
 function Scr_World_RectHitsSolid(_left, _top, _width, _height, _solid) {
     var points = _solid.points;
     var count = array_length(points);
     if (count < 3) return false;
+
+    // 多边形判定收缩半像素：和砖块的 0.001 容差对齐，
+    // 否则贴墙滑动到砖块/多边形的接缝处会被多边形咬住。
+    var eps = 0.05;
+    _left += eps;
+    _top += eps;
+    _width -= eps * 2;
+    _height -= eps * 2;
+    if (_width <= 0 || _height <= 0) return false;
 
     var cx = _left + _width * 0.5;
     var cy = _top + _height * 0.5;
@@ -801,39 +824,80 @@ function Scr_World_MoveRectSmooth(_world, _left, _top, _width, _height, _dx, _dy
     var step_y = _dy / steps;
 
     for (var s = 0; s < steps; s++) {
-        var move_x = step_x;
-        var move_y = step_y;
+        var applied = false;
 
-        for (var iter = 0; iter < 3; iter++) {
-            if (move_x == 0 && move_y == 0) break;
+        // 0. 如果已经陷进多边形，先沿法线推出来；夹角处要反复推几次。
+        for (var k = 0; k < 4; k++) {
+            var pen = Scr_World_FindSolidHit(_world, _left, _top, _width, _height);
+            if (pen == undefined) break;
+            _left += pen.nx * (pen.overlap + 0.01);
+            _top += pen.ny * (pen.overlap + 0.01);
+        }
 
-            var target_left = _left + move_x;
-            var target_top = _top + move_y;
+        // 1. 整体移动
+        var tx = _left + step_x;
+        var ty = _top + step_y;
+        if (!Scr_World_RectBlocked(_world, tx, ty, tx + _width, ty + _height)) {
+            _left = tx;
+            _top = ty;
+            applied = true;
+            continue;
+        }
 
-            if (!Scr_World_RectBlocked(_world, target_left, target_top, target_left + _width, target_top + _height)) {
-                _left = target_left;
-                _top = target_top;
-                break;
+        // 2. 分轴滑动：贴墙、绕折角都靠这一步，不能先被 MTV 清零。
+        var moved = false;
+        if (step_x != 0) {
+            var ax = _left + step_x;
+            if (!Scr_World_RectBlocked(_world, ax, _top, ax + _width, _top + _height)) {
+                _left = ax;
+                moved = true;
             }
+        }
+        if (step_y != 0) {
+            var ay = _top + step_y;
+            if (!Scr_World_RectBlocked(_world, _left, ay, _left + _width, ay + _height)) {
+                _top = ay;
+                moved = true;
+            }
+        }
+        if (moved) continue;
 
-            var hit = Scr_World_FindSolidHit(_world, target_left, target_top, _width, _height);
-            if (hit != undefined) {
-                var dot = move_x * hit.nx + move_y * hit.ny;
-                if (dot < 0) {
-                    move_x -= hit.nx * dot;
-                    move_y -= hit.ny * dot;
-                    continue;
+        // 3. 斜面：沿碰撞法线切向滑
+        var hit = Scr_World_FindSolidHit(_world, _left + step_x, _top + step_y, _width, _height);
+        var dot = 0;
+        if (hit != undefined) {
+            dot = step_x * hit.nx + step_y * hit.ny;
+            if (dot < 0) {
+                var slide_x = step_x - hit.nx * dot;
+                var slide_y = step_y - hit.ny * dot;
+                var sx2 = _left + slide_x;
+                var sy2 = _top + slide_y;
+                if (!Scr_World_RectBlocked(_world, sx2, sy2, sx2 + _width, sy2 + _height)) {
+                    _left = sx2;
+                    _top = sy2;
+                    applied = true;
                 }
             }
 
-            if (!Scr_World_RectBlocked(_world, _left + move_x, _top, _left + move_x + _width, _top + _height)) {
-                _left += move_x;
+            // 兜底：先接受这一步，再反复把目标位置的重叠推出去。
+            // 贴墙时净位移接近零，不会穿墙；夹角处会顺势滑过去。
+            if (!applied) {
+                var nx2 = _left + step_x;
+                var ny2 = _top + step_y;
+                for (var k2 = 0; k2 < 4; k2++) {
+                    var h2 = Scr_World_FindSolidHit(_world, nx2, ny2, _width, _height);
+                    if (h2 == undefined) break;
+                    nx2 += h2.nx * (h2.overlap + 0.01);
+                    ny2 += h2.ny * (h2.overlap + 0.01);
+                }
+                if (!Scr_World_RectBlocked(_world, nx2, ny2, nx2 + _width, ny2 + _height)) {
+                    _left = nx2;
+                    _top = ny2;
+                    applied = true;
+                }
             }
-            if (!Scr_World_RectBlocked(_world, _left, _top + move_y, _left + _width, _top + move_y + _height)) {
-                _top += move_y;
-            }
-            break;
         }
+
     }
     return { left: _left, top: _top };
 }
@@ -947,14 +1011,14 @@ function Scr_World_SpawnObjects(_world, _layer) {
     }
 }
 
-// ---------- 传送门 / 道具查询 ----------
+// ---------- 传送格 / 道具查询 ----------
 
-function Scr_World_PortalAt(_world, _col, _row) {
+function Scr_World_PadAt(_world, _col, _row) {
     if (_world == undefined) return undefined;
-    for (var i = 0; i < array_length(_world.portals); i++) {
-        var portal = _world.portals[i];
-        if (portal.col == _col && portal.row == _row && portal.target_col != undefined) {
-            return portal;
+    for (var i = 0; i < array_length(_world.pads); i++) {
+        var pad = _world.pads[i];
+        if (pad.col == _col && pad.row == _row && pad.target_col != undefined) {
+            return pad;
         }
     }
     return undefined;

@@ -10,8 +10,8 @@
       ]
     }
   ],
-  "portals": [],
-  "links": [],
+  "pads": [],
+  "pad_links": [],
   "start": {
     "col": 2,
     "row": 6

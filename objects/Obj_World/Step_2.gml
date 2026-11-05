@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 // Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 //
+// F3：调试界面开关
+if (keyboard_check_pressed(vk_f3)) {
+    global.Gloomy_Debug = !global.Gloomy_Debug;
+}
+
 // End Step：相机跟随
 // 地图边界 = world.width/height * tile_size，相机夹在 [0, 地图尺寸 - 视口尺寸]
 

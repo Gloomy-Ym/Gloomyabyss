@@ -20,6 +20,9 @@ if (variable_instance_exists(id, "camera") && camera != -1) {
 Scr_World_Draw(world, cam_x, cam_y, cam_w, cam_h);
 Scr_World_DrawProps(world, cam_x, cam_y, cam_w, cam_h);
 
-if (variable_instance_exists(id, "debug_draw") && debug_draw) {
+if (variable_global_exists("Gloomy_Debug") && global.Gloomy_Debug) {
     Scr_World_DrawSolids(world);
+    draw_set_colour(c_yellow);
+    draw_text(cam_x + 4, cam_y + 4, "DEBUG  F3");
+    draw_set_colour(c_white);
 }
