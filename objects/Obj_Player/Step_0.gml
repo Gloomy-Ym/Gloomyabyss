@@ -48,10 +48,11 @@ else {
 image_index = player_direction * 4 + player_frame;
 if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) {
     var world = global.Gloomy_World;
-    var left_offset = bbox_left - x;
-    var top_offset = bbox_top - y;
-    var box_width = bbox_right - bbox_left;
-    var box_height = bbox_bottom - bbox_top;
+    // 碰撞只用下半身：18×18（比一格小 2px，否则 20 宽的缝永远挤不进去）。
+    var box_width = 18;
+    var box_height = 18;
+    var left_offset = bbox_left - x + (bbox_right - bbox_left - box_width) * 0.5;
+    var top_offset = bbox_bottom - y - box_height;
 
     // 地形：速度倍率 + 持续伤害
     var terrain = Scr_World_DefAt(world, Scr_World_WorldToCol(world, x), Scr_World_WorldToRow(world, y));
@@ -87,30 +88,38 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     // 平面传送门：跨过时把玩家折回目标坐标。
     // 平面两侧内容一致，折回后视觉无缝；道具和对象留在原坐标，不会消失。
     if (variable_struct_exists(world, "portal_planes")) {
-        var pcol = Scr_World_WorldToCol(world, x);
-        var prow = Scr_World_WorldToRow(world, y);
+        // 用碰撞盒判定：整个身体越过平面才折返，避免刚探头就折、看起来跳一下。
+        var body_left = bbox_left;
+        var body_right = bbox_right;
+        var body_top = bbox_top;
+        var body_bottom = bbox_bottom;
+        var body_col = Scr_World_WorldToCol(world, (body_left + body_right) * 0.5);
+        var body_row = Scr_World_WorldToRow(world, (body_top + body_bottom) * 0.5);
+        var plane_px = 0;
+
         for (var plane_i = 0; plane_i < array_length(world.portal_planes); plane_i++) {
             var plane = world.portal_planes[plane_i];
             var crossed = false;
             if (plane.axis == "x") {
-                if (prow >= plane.from && prow < plane.to) {
-                    if (plane.direction == "+" && pcol >= plane.at) crossed = true;
-                    if (plane.direction == "-" && pcol < plane.at) crossed = true;
+                if (body_row >= plane.from && body_row < plane.to) {
+                    plane_px = plane.at * world.tile_size;
+                    if (plane.direction == "+" && body_left >= plane_px) crossed = true;
+                    if (plane.direction == "-" && body_right <= plane_px) crossed = true;
                 }
             }
             else if (plane.axis == "y") {
-                if (pcol >= plane.from && pcol < plane.to) {
-                    if (plane.direction == "+" && prow >= plane.at) crossed = true;
-                    if (plane.direction == "-" && prow < plane.at) crossed = true;
+                if (body_col >= plane.from && body_col < plane.to) {
+                    plane_px = plane.at * world.tile_size;
+                    if (plane.direction == "+" && body_top >= plane_px) crossed = true;
+                    if (plane.direction == "-" && body_bottom <= plane_px) crossed = true;
                 }
             }
             if (crossed) {
                 x += plane.dx * world.tile_size;
                 y += plane.dy * world.tile_size;
-                // 折回后把碰撞盒推回段内：周期边界在 x=0 时，
-                // 盒左会落到 -1 列，碰撞查询会把那里当成墙。
-                x = max(x, -left_offset + 1);
-                y = max(y, -top_offset + 1);
+                // 折回后身体应正好贴住另一侧边界，不再多推一格。
+                x = max(x, -left_offset);
+                y = max(y, -top_offset);
                 break;
             }
         }
@@ -119,15 +128,15 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     // 接缝：只挪世界原点，不挪玩家
     Scr_World_ApplySeams(world, x, y);
 
-    // 传送门
-    if (portal_cooldown > 0) {
-        portal_cooldown -= Scr_Time_Scale();
+    // 传送格
+    if (pad_cooldown > 0) {
+        pad_cooldown -= Scr_Time_Scale();
     }
-    var portal = Scr_World_PortalAt(world, Scr_World_WorldToCol(world, x), Scr_World_WorldToRow(world, y));
-    if (portal != undefined && portal_cooldown <= 0) {
-        x = portal.target_col * world.tile_size + world.tile_size * 0.5;
-        y = portal.target_row * world.tile_size + world.tile_size * 0.5;
-        portal_cooldown = 15;
+    var pad = Scr_World_PadAt(world, Scr_World_WorldToCol(world, x), Scr_World_WorldToRow(world, y));
+    if (pad != undefined && pad_cooldown <= 0) {
+        x = pad.target_col * world.tile_size + world.tile_size * 0.5;
+        y = pad.target_row * world.tile_size + world.tile_size * 0.5;
+        pad_cooldown = 15;
     }
 }
 else {

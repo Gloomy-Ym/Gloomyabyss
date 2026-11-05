@@ -3,7 +3,7 @@
   "segments": [
     { "id": "main", "file": "overworld.seg", "origin": [0, 0] }
   ],
-  "portals": [],
-  "links": [],
+  "pads": [],
+  "pad_links": [],
   "start": { "col": 8, "row": 12 }
 }

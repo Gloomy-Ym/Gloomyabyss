@@ -2,7 +2,9 @@
 // Copyright (C) 2026 Gloomy-Ym, JO-Beacon
 
 depth = 50;
-debug_draw = true;   // 开发期打开，看碰撞形状用的红线
+if (!variable_global_exists("Gloomy_Debug")) {
+    global.Gloomy_Debug = false;  // F3 切换：调试界面
+}
 
 world = Scr_World_Load("corridor");   // 测试走廊；换回大世界改回 "overworld"
 if (world == undefined) {
