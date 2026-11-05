@@ -221,6 +221,27 @@ function Scr_World_ParsePad(_text) {
     };
 }
 
+function Scr_World_ParseLinePortal(_text, _tile_size) {
+    var parts = string_split(_text, ",");
+    if (array_length(parts) != 5) {
+        Scr_World_Log("bad portal directive: " + _text);
+        return undefined;
+    }
+    var portal_id = string_trim(parts[0]);
+    var dir = string_lower(string_trim(parts[1]));
+    if (portal_id == "" || (dir != "right" && dir != "down")) {
+        Scr_World_Log("bad portal directive: " + _text);
+        return undefined;
+    }
+    return {
+        id: portal_id,
+        dir: dir,
+        x: real(string_trim(parts[2])) * _tile_size,
+        y: real(string_trim(parts[3])) * _tile_size,
+        len: real(string_trim(parts[4])) * _tile_size
+    };
+}
+
 // ---------- 段落 ----------
 
 function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) {
@@ -239,6 +260,7 @@ function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) 
         solids: [],
         spawns: [],
         pads: [],
+        line_portals: [],
         blocked_cells: {}
     };
 
@@ -285,6 +307,10 @@ function Scr_World_ParseSegment(_dir, _spec, _terrain, _prop_types, _tile_size) 
                     case "pad":
                         var po = Scr_World_ParsePad(value);
                         if (po != undefined) array_push(seg.pads, po);
+                        break;
+                    case "portal":
+                        var lp = Scr_World_ParseLinePortal(value, _tile_size);
+                        if (lp != undefined) array_push(seg.line_portals, lp);
                         break;
                 }
             }
@@ -370,7 +396,7 @@ function Scr_World_LoadSegments(_name, _base = "") {
         segments: [],
         by_id: {},
         pads: [],
-        portal_planes: [],
+        portal_links: [],
         seams: [],
         start: manifest.start
     };
@@ -422,31 +448,15 @@ function Scr_World_LoadSegments(_name, _base = "") {
         }
     }
 
-    // 传送门平面：门另一侧整片区域映射到目标坐标
-    if (variable_struct_exists(manifest, "portal_planes")) {
-        for (var i = 0; i < array_length(manifest.portal_planes); i++) {
-            var plane = manifest.portal_planes[i];
-            array_push(world.portal_planes, {
-                axis: plane.axis,
-                at: plane.at,
-                from: plane.from,
-                to: plane.to,
-                dx: plane.target[0],
-                dy: plane.target[1],
-                direction: (variable_struct_exists(plane, "direction") ? plane.direction : "+")
+    // 线传送门连接：from / to 都是 段id/门id
+    if (variable_struct_exists(manifest, "portal_links")) {
+        for (var i = 0; i < array_length(manifest.portal_links); i++) {
+            var link = manifest.portal_links[i];
+            array_push(world.portal_links, {
+                from: link.from,
+                to: link.to,
+                face: (variable_struct_exists(link, "face") ? link.face : "A")
             });
-        }
-    }
-
-    // 接缝：段内越界时重定原点
-    if (variable_struct_exists(manifest, "seams")) {
-        for (var i = 0; i < array_length(manifest.seams); i++) {
-            var seam = manifest.seams[i];
-            if (!variable_struct_exists(world.by_id, seam.segment)) {
-                Scr_World_Log("seam references unknown segment: " + string(seam.segment));
-                return undefined;
-            }
-            array_push(world.seams, seam);
         }
     }
 
@@ -491,10 +501,6 @@ function Scr_World_LoadSegments(_name, _base = "") {
         if (world.seams[i].axis == "x") unbounded_x = true;
         if (world.seams[i].axis == "y") unbounded_y = true;
     }
-    for (var i = 0; i < array_length(world.portal_planes); i++) {
-        if (world.portal_planes[i].axis == "x") unbounded_x = true;
-        if (world.portal_planes[i].axis == "y") unbounded_y = true;
-    }
 
     world.min_col = min_col;
     world.max_col = max_col;
@@ -525,65 +531,7 @@ function Scr_World_Load(_name, _base = "") {
 
 // ---------- 查询 ----------
 
-// 传送格：把坐标解析到真正的数据坐标
-function Scr_World_Resolve(_world, _col, _row) {
-    if (_world.portal_planes == undefined) {
-        return { col: _col, row: _row };
-    }
-
-    for (var iter = 0; iter < 8; iter++) {
-        var moved = false;
-        for (var i = 0; i < array_length(_world.portal_planes); i++) {
-            var plane = _world.portal_planes[i];
-            if (plane.axis == "x") {
-                if (_row >= plane.from && _row < plane.to) {
-                    // 正向：作用于 >= at 的一侧
-                    if (plane.direction == "+" && _col >= plane.at) {
-                        var span_p = abs(plane.dx);
-                        var kp = floor((_col - plane.at) / span_p) + 1;
-                        _col += kp * plane.dx;
-                        _row += kp * plane.dy;
-                        moved = true;
-                        break;
-                    }
-                    // 反向：作用于 < at 的一侧
-                    if (plane.direction == "-" && _col < plane.at) {
-                        var span_n = abs(plane.dx);
-                        var kn = floor((plane.at - _col - 1) / span_n) + 1;
-                        _col += kn * plane.dx;
-                        _row += kn * plane.dy;
-                        moved = true;
-                        break;
-                    }
-                }
-            }
-            else if (plane.axis == "y") {
-                if (_row >= plane.at && _col >= plane.from && _col < plane.to) {
-                    if (plane.dy < 0) {
-                        var span_y = -plane.dy;
-                        var ky = floor((_row - plane.at) / span_y) + 1;
-                        _row += ky * plane.dy;
-                        _col += ky * plane.dx;
-                    }
-                    else {
-                        _row += plane.dy;
-                        _col += plane.dx;
-                    }
-                    moved = true;
-                    break;
-                }
-            }
-        }
-        if (!moved) break;
-    }
-
-    return { col: _col, row: _row };
-}
-
 function Scr_World_SegmentAt(_world, _col, _row) {
-    var resolved = Scr_World_Resolve(_world, _col, _row);
-    _col = resolved.col;
-    _row = resolved.row;
     var count = array_length(_world.segments);
     for (var i = 0; i < count; i++) {
         var seg = _world.segments[i];
@@ -906,6 +854,104 @@ function Scr_World_MoveRectSmooth(_world, _left, _top, _width, _height, _dx, _dy
     return { left: _left, top: _top };
 }
 
+
+// 线传送门：返回新的身体中心坐标，没穿越返回 undefined。
+function Scr_World_FindPortalRef(_world, _ref) {
+    var slash = string_pos("/", _ref);
+    if (slash <= 0) return undefined;
+    var seg_id = string_copy(_ref, 1, slash - 1);
+    var portal_id = string_copy(_ref, slash + 1, string_length(_ref) - slash);
+    var seg = _world.by_id[$ seg_id];
+    if (seg == undefined) return undefined;
+    for (var i = 0; i < array_length(seg.line_portals); i++) {
+        if (seg.line_portals[i].id == portal_id) {
+            return { seg: seg, portal: seg.line_portals[i], ref: _ref };
+        }
+    }
+    return undefined;
+}
+
+function Scr_World_LinePortalCross(_world, _p0x, _p0y, _p1x, _p1y) {
+    var ts = _world.tile_size;
+    for (var i = 0; i < array_length(_world.segments); i++) {
+        var seg = _world.segments[i];
+        var ox = seg.origin_col * ts;
+        var oy = seg.origin_row * ts;
+        for (var j = 0; j < array_length(seg.line_portals); j++) {
+            var p = seg.line_portals[j];
+            var entry = "";
+            var along = 0;
+            var line_start = 0;
+            var line_len = p.len;
+
+            if (p.dir == "right") {
+                var ly = oy + p.y;
+                var x1 = ox + p.x;
+                if (x1 <= _p0x && _p0x <= x1 + p.len ||
+                    x1 <= _p1x && _p1x <= x1 + p.len) {
+                    if (_p0y <= ly && _p1y > ly) entry = "A";
+                    else if (_p0y >= ly && _p1y < ly) entry = "B";
+                    if (entry != "") {
+                        var t = (_p1y - _p0y);
+                        along = _p1x;
+                        if (t != 0) along = _p0x + (_p1x - _p0x) * ((ly - _p0y) / t);
+                        line_start = x1;
+                        if (along < line_start || along > line_start + line_len) entry = "";
+                    }
+                }
+            }
+            else {
+                var lx = ox + p.x;
+                var y1 = oy + p.y;
+                if (y1 <= _p0y && _p0y <= y1 + p.len ||
+                    y1 <= _p1y && _p1y <= y1 + p.len) {
+                    if (_p0x <= lx && _p1x > lx) entry = "A";
+                    else if (_p0x >= lx && _p1x < lx) entry = "B";
+                    if (entry != "") {
+                        var t2 = (_p1x - _p0x);
+                        along = _p1y;
+                        if (t2 != 0) along = _p0y + (_p1y - _p0y) * ((lx - _p0x) / t2);
+                        line_start = y1;
+                        if (along < line_start || along > line_start + line_len) entry = "";
+                    }
+                }
+            }
+
+            if (entry == "") continue;
+
+            var from_ref = seg.id + "/" + p.id;
+            for (var k = 0; k < array_length(_world.portal_links); k++) {
+                var link = _world.portal_links[k];
+                if (link.from != from_ref) continue;
+                if (link.face != "both" && link.face != entry) continue;
+
+                var target = Scr_World_FindPortalRef(_world, link.to);
+                if (target == undefined) continue;
+                var tp = target.portal;
+                var tseg = target.seg;
+
+                var t_along = 0;
+                if (line_len > 0) t_along = (along - line_start) / line_len;
+                t_along = clamp(t_along, 0, 1);
+
+                var exit_b = (entry == "A");
+                var tx = tseg.origin_col * ts + tp.x;
+                var ty = tseg.origin_row * ts + tp.y;
+                if (tp.dir == "right") {
+                    tx += t_along * tp.len;
+                    ty += (exit_b ? 1 : -1) * abs(_p1y - ly);
+                }
+                else {
+                    ty += t_along * tp.len;
+                    tx += (exit_b ? 1 : -1) * abs(_p1x - lx);
+                }
+                return { x: tx, y: ty };
+            }
+        }
+    }
+    return undefined;
+}
+
 // ---------- 渲染 ----------
 
 function Scr_World_Draw(_world, _cam_x, _cam_y, _cam_w, _cam_h) {
@@ -961,6 +1007,156 @@ function Scr_World_DrawProps(_world, _cam_x, _cam_y, _cam_w, _cam_h) {
     }
 }
 
+// ---------- 传送门视觉 ----------
+
+function Scr_World_PortalEnds(_world, _seg, _p) {
+    var ts = _world.tile_size;
+    var ox = _seg.origin_col * ts;
+    var oy = _seg.origin_row * ts;
+    if (_p.dir == "right") {
+        return {
+            x1: ox + _p.x, y1: oy + _p.y,
+            x2: ox + _p.x + _p.len, y2: oy + _p.y
+        };
+    }
+    return {
+        x1: ox + _p.x, y1: oy + _p.y,
+        x2: ox + _p.x, y2: oy + _p.y + _p.len
+    };
+}
+
+function Scr_World_PortalSide(_p, _ends, _eye_x, _eye_y) {
+    if (_p.dir == "right") {
+        return (_eye_y <= _ends.y1 ? "A" : "B");
+    }
+    return (_eye_x <= _ends.x1 ? "A" : "B");
+}
+
+function Scr_World_DrawPortalTarget(_world, _target, _dx, _dy, _cam_x, _cam_y, _cam_w, _cam_h) {
+    var ts = _world.tile_size;
+    var c0 = floor((_cam_x - _dx) / ts);
+    var c1 = floor((_cam_x + _cam_w - _dx) / ts);
+    var r0 = floor((_cam_y - _dy) / ts);
+    var r1 = floor((_cam_y + _cam_h - _dy) / ts);
+
+    for (var r = r0; r <= r1; r++) {
+        for (var c = c0; c <= c1; c++) {
+            var def = Scr_World_DefAt(_world, c, r);
+            if (def == undefined) continue;
+            draw_set_colour(def.colour);
+            draw_rectangle(c * ts + _dx, r * ts + _dy, (c + 1) * ts - 1 + _dx, (r + 1) * ts - 1 + _dy, false);
+        }
+    }
+
+    var seg = _target.seg;
+    if (variable_global_exists("Gloomy_Level") && seg.origin_z != global.Gloomy_Level) {
+        draw_set_colour(c_white);
+        return;
+    }
+    for (var p = 0; p < array_length(seg.props); p++) {
+        var prop = seg.props[p];
+        var sprite = prop.def.sprite_index;
+        if (sprite == -1) continue;
+        var cx = Scr_World_PropWorldX(_world, seg, prop) + _dx;
+        var cy = Scr_World_PropWorldY(_world, seg, prop) + _dy;
+        var half = ts;
+        if (cx + half < _cam_x || cx - half > _cam_x + _cam_w) continue;
+        if (cy + half < _cam_y || cy - half > _cam_y + _cam_h) continue;
+        draw_sprite(sprite, 0, cx + sprite_get_xoffset(sprite) - sprite_get_width(sprite) * 0.5,
+            cy + sprite_get_yoffset(sprite) - sprite_get_height(sprite) * 0.5);
+    }
+    draw_set_colour(c_white);
+}
+
+function Scr_World_DrawPortalViews(_world, _cam_x, _cam_y, _cam_w, _cam_h, _eye_x, _eye_y) {
+    if (_world == undefined) return;
+
+    // 先收集可见的门，按离玩家由远到近排序，近的后画。
+    var views = [];
+    for (var i = 0; i < array_length(_world.portal_links); i++) {
+        var link = _world.portal_links[i];
+        var src = Scr_World_FindPortalRef(_world, link.from);
+        var dst = Scr_World_FindPortalRef(_world, link.to);
+        if (src == undefined || dst == undefined) continue;
+
+        var ends = Scr_World_PortalEnds(_world, src.seg, src.portal);
+        var margin = 240;
+        var minx = min(ends.x1, ends.x2);
+        var maxx = max(ends.x1, ends.x2);
+        var miny = min(ends.y1, ends.y2);
+        var maxy = max(ends.y1, ends.y2);
+        if (maxx < _cam_x - margin || minx > _cam_x + _cam_w + margin) continue;
+        if (maxy < _cam_y - margin || miny > _cam_y + _cam_h + margin) continue;
+
+        var side = Scr_World_PortalSide(src.portal, ends, _eye_x, _eye_y);
+        if (link.face != "both" && link.face != side) continue;
+
+        array_push(views, {
+            src: src,
+            dst: dst,
+            ends: ends,
+            dist: point_distance(_eye_x, _eye_y, (ends.x1 + ends.x2) * 0.5, (ends.y1 + ends.y2) * 0.5)
+        });
+    }
+
+    // 插入排序：远的在前
+    for (var i = 1; i < array_length(views); i++) {
+        var cur = views[i];
+        var j = i - 1;
+        while (j >= 0 && views[j].dist < cur.dist) {
+            views[j + 1] = views[j];
+            j -= 1;
+        }
+        views[j + 1] = cur;
+    }
+
+    for (var i = 0; i < array_length(views); i++) {
+        var view = views[i];
+        var ends = view.ends;
+        var len1 = point_distance(_eye_x, _eye_y, ends.x1, ends.y1);
+        var len2 = point_distance(_eye_x, _eye_y, ends.x2, ends.y2);
+        if (len1 < 0.001 || len2 < 0.001) continue;
+        var reach = (_cam_w + _cam_h) * 2;
+        var far1x = ends.x1 + (ends.x1 - _eye_x) / len1 * reach;
+        var far1y = ends.y1 + (ends.y1 - _eye_y) / len1 * reach;
+        var far2x = ends.x2 + (ends.x2 - _eye_x) / len2 * reach;
+        var far2y = ends.y2 + (ends.y2 - _eye_y) / len2 * reach;
+
+        var dst_ends = Scr_World_PortalEnds(_world, view.dst.seg, view.dst.portal);
+        var dx = ends.x1 - dst_ends.x1;
+        var dy = ends.y1 - dst_ends.y1;
+
+        gpu_set_stencil_enable(true);
+        gpu_set_colorwriteenable(false, false, false, false);
+
+        gpu_set_stencil_ref(0);
+        gpu_set_stencil_func(cmpfunc_always);
+        gpu_set_stencil_pass(stencilop_zero);
+        gpu_set_stencil_fail(stencilop_zero);
+        gpu_set_stencil_depth_fail(stencilop_zero);
+        draw_rectangle(_cam_x - 4, _cam_y - 4, _cam_x + _cam_w + 4, _cam_y + _cam_h + 4, false);
+
+        gpu_set_stencil_ref(1);
+        gpu_set_stencil_pass(stencilop_replace);
+        draw_primitive_begin(pr_trianglefan);
+        draw_vertex(ends.x1, ends.y1);
+        draw_vertex(far1x, far1y);
+        draw_vertex(far2x, far2y);
+        draw_vertex(ends.x2, ends.y2);
+        draw_primitive_end();
+
+        gpu_set_colorwriteenable(true, true, true, true);
+        gpu_set_stencil_func(cmpfunc_equal);
+        gpu_set_stencil_pass(stencilop_keep);
+        gpu_set_stencil_fail(stencilop_keep);
+        gpu_set_stencil_depth_fail(stencilop_keep);
+
+        Scr_World_DrawPortalTarget(_world, view.dst, dx, dy, _cam_x, _cam_y, _cam_w, _cam_h);
+
+        gpu_set_stencil_enable(false);
+    }
+}
+
 function Scr_World_DrawSolids(_world) {
     if (_world == undefined) return;
     draw_set_colour(c_red);
@@ -976,6 +1172,37 @@ function Scr_World_DrawSolids(_world) {
                 draw_line(p1.x, p1.y, p2.x, p2.y);
             }
         }
+    }
+    // 线传送门与连接：仅调试时显示。
+    draw_set_colour(c_aqua);
+    for (var si = 0; si < array_length(_world.segments); si++) {
+        var sseg = _world.segments[si];
+        var sox = sseg.origin_col * _world.tile_size;
+        var soy = sseg.origin_row * _world.tile_size;
+        for (var pidx = 0; pidx < array_length(sseg.line_portals); pidx++) {
+            var pp = sseg.line_portals[pidx];
+            if (pp.dir == "right") {
+                draw_line(sox + pp.x, soy + pp.y, sox + pp.x + pp.len, soy + pp.y);
+            }
+            else {
+                draw_line(sox + pp.x, soy + pp.y, sox + pp.x, soy + pp.y + pp.len);
+            }
+        }
+    }
+
+    draw_set_colour(c_yellow);
+    for (var li = 0; li < array_length(_world.portal_links); li++) {
+        var lk = _world.portal_links[li];
+        var a = Scr_World_FindPortalRef(_world, lk.from);
+        var b = Scr_World_FindPortalRef(_world, lk.to);
+        if (a == undefined || b == undefined) continue;
+        var ax = a.seg.origin_col * _world.tile_size + a.portal.x;
+        var ay = a.seg.origin_row * _world.tile_size + a.portal.y;
+        var bx = b.seg.origin_col * _world.tile_size + b.portal.x;
+        var by = b.seg.origin_row * _world.tile_size + b.portal.y;
+        if (a.portal.dir == "right") ax += a.portal.len * 0.5; else ay += a.portal.len * 0.5;
+        if (b.portal.dir == "right") bx += b.portal.len * 0.5; else by += b.portal.len * 0.5;
+        draw_line(ax, ay, bx, by);
     }
     draw_set_colour(c_white);
 }

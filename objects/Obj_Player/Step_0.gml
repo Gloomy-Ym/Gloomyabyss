@@ -73,6 +73,8 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     }
 
     // 网格 + 碰撞形状（带滑动）
+    var prev_cx = x + left_offset + box_width * 0.5;
+    var prev_cy = y + top_offset + box_height * 0.5;
     var moved = Scr_World_MoveRectSmooth(
         world,
         x + left_offset,
@@ -85,45 +87,29 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     x = moved.left - left_offset;
     y = moved.top - top_offset;
 
-    // 平面传送门：跨过时把玩家折回目标坐标。
-    // 平面两侧内容一致，折回后视觉无缝；道具和对象留在原坐标，不会消失。
-    if (variable_struct_exists(world, "portal_planes")) {
-        // 用碰撞盒判定：整个身体越过平面才折返，避免刚探头就折、看起来跳一下。
-        var body_left = bbox_left;
-        var body_right = bbox_right;
-        var body_top = bbox_top;
-        var body_bottom = bbox_bottom;
-        var body_col = Scr_World_WorldToCol(world, (body_left + body_right) * 0.5);
-        var body_row = Scr_World_WorldToRow(world, (body_top + body_bottom) * 0.5);
-        var plane_px = 0;
-
-        for (var plane_i = 0; plane_i < array_length(world.portal_planes); plane_i++) {
-            var plane = world.portal_planes[plane_i];
-            var crossed = false;
-            if (plane.axis == "x") {
-                if (body_row >= plane.from && body_row < plane.to) {
-                    plane_px = plane.at * world.tile_size;
-                    if (plane.direction == "+" && body_left >= plane_px) crossed = true;
-                    if (plane.direction == "-" && body_right <= plane_px) crossed = true;
-                }
-            }
-            else if (plane.axis == "y") {
-                if (body_col >= plane.from && body_col < plane.to) {
-                    plane_px = plane.at * world.tile_size;
-                    if (plane.direction == "+" && body_top >= plane_px) crossed = true;
-                    if (plane.direction == "-" && body_bottom <= plane_px) crossed = true;
-                }
-            }
-            if (crossed) {
-                x += plane.dx * world.tile_size;
-                y += plane.dy * world.tile_size;
-                // 折回后身体应正好贴住另一侧边界，不再多推一格。
-                x = max(x, -left_offset);
-                y = max(y, -top_offset);
-                break;
-            }
+    // 线传送门：跨过线时按入口面送到目标线。
+    if (line_portal_cooldown > 0) {
+        line_portal_cooldown -= Scr_Time_Scale();
+    }
+    var cur_cx = x + left_offset + box_width * 0.5;
+    var cur_cy = y + top_offset + box_height * 0.5;
+    if (line_portal_cooldown <= 0 && (cur_cx != prev_cx || cur_cy != prev_cy)) {
+        var portal_target = Scr_World_LinePortalCross(
+            world,
+            prev_cx,
+            prev_cy,
+            cur_cx,
+            cur_cy
+        );
+        if (portal_target != undefined) {
+            x = portal_target.x - left_offset - box_width * 0.5;
+            y = portal_target.y - top_offset - box_height * 0.5;
+            line_portal_cooldown = 15;
         }
     }
+
+    portal_eye_x = x + left_offset + box_width * 0.5;
+    portal_eye_y = y + top_offset + box_height * 0.5;
 
     // 接缝：只挪世界原点，不挪玩家
     Scr_World_ApplySeams(world, x, y);

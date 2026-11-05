@@ -27,17 +27,32 @@
     "row": 6
   },
   "seams": [],
-  "portal_planes": [
+  "portal_links": [
     {
-      "axis": "x",
-      "at": 32,
-      "from": 0,
-      "to": 12,
-      "direction": "+",
-      "target": [
-        -32,
-        12
-      ]
+      "from": "corridor/lp1",
+      "to": "3232/lp2",
+      "face": "B"
+    },
+    {
+      "from": "3232/lp2",
+      "to": "corridor/lp1",
+      "face": "A"
+    },
+    {
+      "from": "3232/lp2",
+      "to": "3232/lp1",
+      "face": "B"
+    },
+    {
+      "from": "3232/lp3",
+      "to": "corridor/lp2",
+      "face": "both"
+    },
+    {
+      "from": "corridor/lp2",
+      "to": "3232/lp3",
+      "face": "both"
     }
-  ]
+  ],
+  "portal_planes": []
 }
