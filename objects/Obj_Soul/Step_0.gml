@@ -102,6 +102,7 @@ if (sprite_index == Spr_Soul_Orange && Hp_Final > 0) {
 }
 //黄魂
 if (sprite_index == Spr_Soul_Yellow && Hp_Final > 0) {
+    image_angle = 180;
     if (Scr_Input_KeyPressed(ord("Z")) || Scr_Input_KeyPressed(vk_enter)) {
         audio_play_sound(Snd_Soul_Yellow_Shoot_Bullet, 0, false);
         instance_create_depth(x, y - 17, depth, Obj_Bullet_Soul_Yellow);

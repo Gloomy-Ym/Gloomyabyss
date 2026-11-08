@@ -36,7 +36,7 @@ else if (sprite_index == Spr_Bullet_Soul_Yellow_5) {
         Frames = 0;
     }
 }
-Collisions = move_and_collide(0, -15 * Scr_Time_Scale(), Obj_Parent_Bullet);
+Collisions = move_and_collide(0, -15 * Scr_Time_Scale(), Obj_Parent_Normal_Bullet);
 if (array_length(Collisions) > 0) {
 	Collisions_Bullet = Collisions[0];
     if (Collisions_Bullet.Hit == true) {
