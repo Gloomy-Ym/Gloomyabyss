@@ -23,13 +23,13 @@ Def_Final = global.Gloomy_Player.Def_Final;
 Def_Self = global.Gloomy_Player.Def_Self;
 Def_Equip = global.Gloomy_Player.Def_Equip;
 //移速
-Move_Speed = 4;
-Move_Speed_Jump = -8;
-Move_Speed_Jump_Gravity = 0.25;
+Move_Speed = 2;
+Move_Speed_Jump = -4;
+Move_Speed_Jump_Gravity = 0.125;
 Move_Speed_Jump_Min = 0;
 Move_Speed_Fall = 0;
-Move_Speed_Fall_Gravity = 0.25;
-Move_Speed_Fall_Max = 20;
+Move_Speed_Fall_Gravity = 0.125;
+Move_Speed_Fall_Max = 8;
 Move_Speed_Modifier_Hold_X_Or_Shift = 0.5;
 Move_Speed_Modifier_Penalty = 1;
 Move_Speed_Modifier_Penalty_Timer = 0;
@@ -44,8 +44,6 @@ H = 0;
 V = 0;
 //无敌帧
 Invincible_Frames = 0;
-// 帧伤冷却：按 30 逻辑帧锁定，60 帧时每两帧最多扣一次
-Frame_Damage_Cooldown = 0;
 Invincible_Frames_Falsh_Timer = 0;
 //Mode_Invincible
 Mode_Invincible = false;

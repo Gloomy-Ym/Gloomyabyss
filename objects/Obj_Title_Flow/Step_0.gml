@@ -19,7 +19,7 @@ switch (title_state) {
 
     case 1:
         if (title_timer > 0) {
-            title_timer -= Scr_Time_Scale();
+            title_timer -= 1;
         }
         if (confirm_pressed || title_timer <= 0) {
             layer_set_visible("Assets", false);
@@ -38,7 +38,7 @@ switch (title_state) {
 
     case 3:
         if (title_timer > 0) {
-            title_timer -= Scr_Time_Scale();
+            title_timer -= 1;
         }
         if (confirm_pressed || title_timer <= 0) {
             title_state = 4;

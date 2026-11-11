@@ -81,8 +81,8 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
         y + top_offset,
         box_width,
         box_height,
-        horizontal * player_move_speed * terrain_speed * Scr_Time_Scale(),
-        vertical * player_move_speed * terrain_speed * Scr_Time_Scale()
+        horizontal * player_move_speed * terrain_speed,
+        vertical * player_move_speed * terrain_speed
     );
     x = moved.left - left_offset;
     y = moved.top - top_offset;

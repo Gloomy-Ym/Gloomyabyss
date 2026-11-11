@@ -160,12 +160,12 @@ if (sprite_index == Spr_Soul_Blue) {
         Move_Speed_Fall = 0;
         if (keyboard_check(ord("W")) || keyboard_check(vk_up)) {
             Move_Jump = true;
-            Move_Speed_Jump = -8;
+            Move_Speed_Jump = -4;
         }
     }
     if (On_Ground == false) {
     	if (Move_Jump == true && Move_Speed_Jump <= Move_Speed_Jump_Min) {
-        	Move_Speed_Jump += Move_Speed_Jump_Gravity * Scr_Time_Scale();
+        	Move_Speed_Jump += Move_Speed_Jump_Gravity;
             Move_Speed_Fall = 0;
             Move_Fall = false;
         }
@@ -174,7 +174,7 @@ if (sprite_index == Spr_Soul_Blue) {
             Move_Fall = true;
         }
         if (Move_Fall == true && Move_Speed_Fall <= Move_Speed_Fall_Max) {
-        	Move_Speed_Fall += Move_Speed_Fall_Gravity * Scr_Time_Scale();
+        	Move_Speed_Fall += Move_Speed_Fall_Gravity;
         }
         if (Move_Speed_Fall > Move_Speed_Fall_Max) {
         	Move_Speed_Fall = Move_Speed_Fall_Max;
@@ -188,12 +188,8 @@ if (Scr_Input_KeyDown(ord("X")) || Scr_Input_KeyDown(vk_shift)) {
 else {
     Move_Speed_Final = Move_Speed * Move_Speed_Modifier_Penalty;
 }
-if (Frame_Damage_Cooldown > 0) {
-    Frame_Damage_Cooldown -= Scr_Time_Scale();
-}
-
 if (Move_Speed_Modifier_Penalty_Timer > 0) {
-    Move_Speed_Modifier_Penalty_Timer -= Scr_Time_Scale();
+    Move_Speed_Modifier_Penalty_Timer -= 1;
 }
 else {
     Move_Speed_Modifier_Penalty_Timer = 0;
@@ -203,20 +199,20 @@ if (overworld_menu_open) {
     H = 0;
     V = 0;
 }
-x += H * Move_Speed_Final * Scr_Time_Scale();
-y += V * Move_Speed_Final * Scr_Time_Scale();
+x += H * Move_Speed_Final;
+y += V * Move_Speed_Final;
 if (sprite_index == Spr_Soul_Blue) {
 	if (Move_Jump == true) {
-        move_and_collide(0, Move_Speed_Jump * Scr_Time_Scale(), solid_collision_objects);
+        move_and_collide(0, Move_Speed_Jump, solid_collision_objects);
     }
     if (Move_Fall == true) {
-    	move_and_collide(0, Move_Speed_Fall * Scr_Time_Scale(), solid_collision_objects);
+    	move_and_collide(0, Move_Speed_Fall, solid_collision_objects);
     }
 }
 //减少无敌帧与闪烁
 if (Invincible_Frames > 0) {
-    Invincible_Frames = max(0, Invincible_Frames - Scr_Time_Scale());
-    Invincible_Frames_Falsh_Timer += Scr_Time_Scale();
+    Invincible_Frames = max(0, Invincible_Frames - 1);
+    Invincible_Frames_Falsh_Timer += 1;
     if (Invincible_Frames_Falsh_Timer >= 3) {
         Invincible_Frames_Falsh_Timer = 0;
         visible = !visible;
