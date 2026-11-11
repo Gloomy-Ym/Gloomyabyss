@@ -4,7 +4,7 @@
 player_direction = 0;
 player_frame = 0;
 player_frame_timer = 0;
-player_move_speed = 2.5;
+player_move_speed = 1.25;
 terrain_damage_accum = 0;
 pad_cooldown = 0;
 line_portal_cooldown = 0;

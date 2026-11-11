@@ -34,7 +34,7 @@ else if (horizontal > 0) {
 
 var is_moving = horizontal != 0 || vertical != 0;
 if (is_moving) {
-    player_frame_timer += Scr_Time_Scale();
+    player_frame_timer += 0.5;
     if (player_frame_timer >= 6) {
         player_frame_timer = 0;
         player_frame = (player_frame + 1) mod 4;
@@ -59,7 +59,7 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
     var terrain_speed = (terrain != undefined ? terrain.speed : 1);
 
     if (terrain != undefined && terrain.damage > 0 && variable_global_exists("Gloomy_Player")) {
-        terrain_damage_accum += terrain.damage * Scr_Time_Dt();
+        terrain_damage_accum += terrain.damage * 0.5;
         while (terrain_damage_accum >= 1) {
             terrain_damage_accum -= 1;
             global.Gloomy_Player.Hp_Final = max(0, global.Gloomy_Player.Hp_Final - 1);
@@ -89,7 +89,7 @@ if (variable_global_exists("Gloomy_World") && global.Gloomy_World != undefined) 
 
     // 线传送门：跨过线时按入口面送到目标线。
     if (line_portal_cooldown > 0) {
-        line_portal_cooldown -= Scr_Time_Scale();
+        line_portal_cooldown -= 0.5;
     }
     var cur_cx = x + left_offset + box_width * 0.5;
     var cur_cy = y + top_offset + box_height * 0.5;
