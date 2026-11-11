@@ -6,7 +6,6 @@ if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0 && H = 0 && V = 0
         if (Frame_Damage_Cooldown > 0) exit;
         Frame_Damage_Cooldown = 1;
     }
-
 	    audio_play_sound(Snd_Hurt, 0, false);
     Invincible_Frames = other.Invincible_Frames;
     Move_Speed_Modifier_Penalty = other.Move_Speed_Modifier_Penalty;

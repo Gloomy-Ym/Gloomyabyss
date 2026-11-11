@@ -213,7 +213,7 @@ if (sprite_index == Spr_Soul_Blue) {
 if (Invincible_Frames > 0) {
     Invincible_Frames = max(0, Invincible_Frames - 1);
     Invincible_Frames_Falsh_Timer += 1;
-    if (Invincible_Frames_Falsh_Timer >= 3) {
+    if (Invincible_Frames_Falsh_Timer >= 6) {
         Invincible_Frames_Falsh_Timer = 0;
         visible = !visible;
     }
