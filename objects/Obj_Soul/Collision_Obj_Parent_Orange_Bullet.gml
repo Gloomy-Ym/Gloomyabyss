@@ -11,14 +11,14 @@ if (!Mode_Invincible && Invincible_Frames == 0 && Hp_Final > 0 && H = 0 && V = 0
     Move_Speed_Modifier_Penalty = other.Move_Speed_Modifier_Penalty;
     Move_Speed_Modifier_Penalty_Timer = other.Move_Speed_Modifier_Penalty_Timer;
     if (Hp_Karma == 0 && Hp_Normal > 1) {
-        Hp_Karma += Hp_Normal - max(1, Hp_Normal - other.Damage_Karma);
         Hp_Normal -= max(1, other.Damage_Normal - Def_Final);
+        Hp_Karma += Hp_Normal - max(1, Hp_Normal - other.Damage_Karma);
         Hp_Normal = max(1, Hp_Normal - other.Damage_Karma);
     }
     else if (Hp_Karma > 0 && Hp_Normal > 1) {
+        Hp_Karma -= max(1, other.Damage_Normal - Def_Final);
         Hp_Karma += Hp_Normal - max(1, Hp_Normal - other.Damage_Karma);
         Hp_Normal = max(1, Hp_Normal - other.Damage_Karma);
-        Hp_Karma -= max(1, other.Damage_Normal - Def_Final);
     }
     else if (Hp_Karma > 0 && Hp_Normal == 1) {
     	Hp_Karma -= max(1, other.Damage_Normal - Def_Final);
