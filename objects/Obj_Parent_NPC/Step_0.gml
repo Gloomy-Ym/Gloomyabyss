@@ -17,28 +17,21 @@ for (var i = 0; i < array_length(Buff); i++) {
         	Buff[i].Rate_Timer += 1;
             if (Buff[i].Rate_Timer >= Buff[i].Rate) { 
                 if (Hp_Karma == 0 && Hp_Normal > 1) {
-                    Hp_Normal -= 
-                    Hp_Karma = min(Hp_Final - 1, Hp_Karma); 
+                    Hp_Normal -= Buff[i].Damage;
                 }
                 else if (Hp_Karma > 0 && Hp_Normal > 1) {
-                    Hp_Normal = max(1, Hp_Normal - other.Damage_Karma);
-                    Hp_Karma -= max(1, other.Damage_Normal - Def_Final);
-                    Hp_Karma += other.Damage_Karma;
-                    Hp_Karma = min(Hp_Final - 1, Hp_Karma);
+                    Hp_Karma -= Buff[i].Damage;
                 }
-                else if (Hp_Karma > 0 && Hp_Normal == 1) {
-    	           Hp_Karma -= max(1, other.Damage_Normal - Def_Final);
+                else if (Hp_Karma > 0 && Hp_Normal == 1) { 
+                    Hp_Karma -= Buff[i].Damage;
                 }
                 else if (Hp_Karma == 0 && Hp_Normal == 1) {
-                    Hp_Normal -= max(1, other.Damage_Normal - Def_Final);
+                    Hp_Normal -= Buff[i].Damage;
                 }
                 if (Hp_Karma < 0) { 
                     Hp_Normal += Hp_Karma;
                     Hp_Karma = 0;
                 }
-                if (Hp_Normal < 0) { 
-                    Hp_Normal = 0;
-                } 
             Buff[i].Rate_Timer = 0;
             }
         } 
