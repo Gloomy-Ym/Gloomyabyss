@@ -14,24 +14,13 @@ for (var i = 0; i < array_length(Buff); i++) {
         	Buff[i].Timer -= (delta_time / 1000000);
         }
         if (Buff[i].Damage > 0) {
-        	Buff[i].Rate_Timer += 1;
-            if (Buff[i].Rate_Timer >= Buff[i].Rate) { 
-                if (Hp_Karma == 0 && Hp_Normal > 1) {
-                    Hp_Normal -= Buff[i].Damage;
-                }
-                else if (Hp_Karma > 0 && Hp_Normal > 1) {
-                    Hp_Karma -= Buff[i].Damage;
-                }
-                else if (Hp_Karma > 0 && Hp_Normal == 1) { 
-                    Hp_Karma -= Buff[i].Damage;
-                }
-                else if (Hp_Karma == 0 && Hp_Normal == 1) {
-                    Hp_Normal -= Buff[i].Damage;
-                }
-                if (Hp_Karma < 0) { 
-                    Hp_Normal += Hp_Karma;
-                    Hp_Karma = 0;
-                }
+        	Buff[i].Rate_Timer += 1; 
+        if (Buff[i].Rate_Timer >= Buff[i].Rate) { 
+            Hp_Karma -= Buff[i].Damage;
+        if (Hp_Karma < 0) {
+    	    Hp_Normal += Hp_Karma;
+            Hp_Karma = 0;
+        }
             Buff[i].Rate_Timer = 0;
             }
         } 
